@@ -1,7 +1,9 @@
 # 🗺️ RokTenh Map Service - Development Plan & Timeline
 
 > **Project**: Map Service API Platform  
-> **Duration**: 4 Weeks  
+> **Duration**: 4 Weeks (1 Month)  
+> **Start Date**: December 8, 2025  
+> **End Date**: January 5, 2026  
 > **Focus**: Code Review, Issue Fixing & Backend API Integration
 
 ---
@@ -16,11 +18,59 @@ The project consists of **3 main application types**:
 
 ---
 
+## 📅 Quick Reference Calendar
+
+| Week       | Dates                      | Focus Area           | Key Deliverables                                                |
+| ---------- | -------------------------- | -------------------- | --------------------------------------------------------------- |
+| **Week 1** | Dec 8-14, 2025             | UI Review & Fixing   | Landing/Portal/Admin UI refined, CSS fixed, cleanup done        |
+| **Week 2** | Dec 15-21, 2025            | Frontend Logic       | Auth system, state management, business logic, validations      |
+| **Week 3** | Dec 22-28, 2025            | API Integration      | All endpoints connected, mock data replaced, payment integrated |
+| **Week 4** | Dec 29, 2025 - Jan 5, 2026 | Testing & Bug Fixing | E2E tested, bugs fixed, documented, production ready            |
+
+### Daily Breakdown
+
+**Week 1 (UI Review & Fixing)**
+
+- Dec 8-9: Landing Page Review
+- Dec 10-11: Portal Review
+- Dec 12: SuperAdmin Review
+- Dec 13-14: Cross-Cutting Fixes
+
+**Week 2 (Frontend Logic)**
+
+- Dec 15-16: Authentication & Authorization
+- Dec 17: State Management
+- Dec 18-19: Business Logic
+- Dec 20: Notification System
+- Dec 21: Validation & Error Handling
+
+**Week 3 (API Integration)**
+
+- Dec 22: Backend API Setup
+- Dec 23: Authentication APIs
+- Dec 24-25: Portal APIs
+- Dec 26: SuperAdmin APIs
+- Dec 27: Map Service APIs
+- Dec 28: Payment Gateway
+
+**Week 4 (Testing & Final)**
+
+- Dec 29-30: Functional Testing
+- Dec 31: Integration Testing
+- Jan 1: Performance Testing
+- Jan 2: Cross-Browser Testing
+- Jan 3: Bug Fixing
+- Jan 4-5: Final Review & Documentation
+
+---
+
 ## 🎯 4-WEEK DEVELOPMENT TIMELINE
 
 ---
 
 # **WEEK 1 — UI Review & Fixing**
+
+**📅 December 8-14, 2025**
 
 ### **Phase 1.1: Landing Page Review**
 
@@ -54,6 +104,7 @@ The project consists of **3 main application types**:
 
 ### **Phase 1.2: Portal (User Dashboard) Review**
 
+**📅 December 10-11, 2025 (2 days)**  
 **Feature**: Authenticated User Interface
 
 #### Tasks:
@@ -102,6 +153,7 @@ The project consists of **3 main application types**:
 
 ### **Phase 1.3: SuperAdmin Interface Review**
 
+**📅 December 12, 2025 (1 day)**  
 **Feature**: Admin Management Dashboard
 
 #### Tasks:
@@ -134,6 +186,7 @@ The project consists of **3 main application types**:
 
 ### **Phase 1.4: Cross-Cutting UI Fixes**
 
+**📅 December 13-14, 2025 (2 days)**  
 **Feature**: Global UI/UX Improvements
 
 #### Tasks:
@@ -167,8 +220,11 @@ The project consists of **3 main application types**:
 
 # **WEEK 2 — Frontend Logic**
 
+**📅 December 15-21, 2025**
+
 ### **Phase 2.1: Authentication & Authorization**
 
+**📅 December 15-16, 2025 (2 days)**  
 **Feature**: User Authentication System
 
 #### Tasks:
@@ -198,6 +254,7 @@ The project consists of **3 main application types**:
 
 ### **Phase 2.2: State Management**
 
+**📅 December 17, 2025 (1 day)**  
 **Feature**: Data Flow & State Handling
 
 #### Tasks:
@@ -226,6 +283,7 @@ The project consists of **3 main application types**:
 
 ### **Phase 2.3: Business Logic Implementation**
 
+**📅 December 18-19, 2025 (2 days)**  
 **Feature**: Core Application Logic
 
 #### Tasks:
@@ -257,6 +315,7 @@ The project consists of **3 main application types**:
 
 ### **Phase 2.4: Notification System**
 
+**📅 December 20, 2025 (1 day)**  
 **Feature**: User Notification Management
 
 #### Tasks:
@@ -285,6 +344,7 @@ The project consists of **3 main application types**:
 
 ### **Phase 2.5: Data Validation & Error Handling**
 
+**📅 December 21, 2025 (1 day)**  
 **Feature**: Input Validation & Error Management
 
 #### Tasks:
@@ -308,8 +368,11 @@ The project consists of **3 main application types**:
 
 # **WEEK 3 — API Integration**
 
+**📅 December 22-28, 2025**
+
 ### **Phase 3.1: Backend API Setup**
 
+**📅 December 22, 2025 (1 day)**  
 **Feature**: API Service Configuration
 
 #### Tasks:
@@ -333,6 +396,7 @@ The project consists of **3 main application types**:
 
 ### **Phase 3.2: Authentication API Integration**
 
+**📅 December 23, 2025 (1 day)**  
 **Feature**: Auth Endpoints Integration
 
 #### Tasks:
@@ -362,6 +426,7 @@ The project consists of **3 main application types**:
 
 ### **Phase 3.3: User Portal API Integration**
 
+**📅 December 24-25, 2025 (2 days)**  
 **Feature**: User Dashboard Endpoints
 
 #### Tasks:
@@ -401,6 +466,7 @@ The project consists of **3 main application types**:
 
 ### **Phase 3.4: SuperAdmin API Integration**
 
+**📅 December 26, 2025 (1 day)**  
 **Feature**: Admin Management Endpoints
 
 #### Tasks:
@@ -434,6 +500,7 @@ The project consists of **3 main application types**:
 
 ### **Phase 3.5: Map Service API Integration**
 
+**📅 December 27, 2025 (1 day)**  
 **Feature**: Core Map Services (if applicable)
 
 #### Tasks:
@@ -469,6 +536,7 @@ The project consists of **3 main application types**:
 
 ### **Phase 3.6: Payment Gateway Integration**
 
+**📅 December 28, 2025 (1 day)**  
 **Feature**: Payment Processing
 
 #### Tasks:
@@ -491,8 +559,11 @@ The project consists of **3 main application types**:
 
 # **WEEK 4 — Testing, Bug Fixing & Final Review**
 
+**📅 December 29, 2025 - January 5, 2026**
+
 ### **Phase 4.1: Functional Testing**
 
+**📅 December 29-30, 2025 (2 days)**  
 **Feature**: End-to-End Testing
 
 #### Tasks:
@@ -534,6 +605,7 @@ The project consists of **3 main application types**:
 
 ### **Phase 4.2: Integration Testing**
 
+**📅 December 31, 2025 (1 day)**  
 **Feature**: API Integration Verification
 
 #### Tasks:
@@ -564,6 +636,7 @@ The project consists of **3 main application types**:
 
 ### **Phase 4.3: Performance Testing**
 
+**📅 January 1, 2026 (1 day)**  
 **Feature**: Application Performance
 
 #### Tasks:
@@ -594,6 +667,7 @@ The project consists of **3 main application types**:
 
 ### **Phase 4.4: Cross-Browser & Device Testing**
 
+**📅 January 2, 2026 (1 day)**  
 **Feature**: Compatibility Testing
 
 #### Tasks:
@@ -624,6 +698,7 @@ The project consists of **3 main application types**:
 
 ### **Phase 4.5: Bug Fixing**
 
+**📅 January 3, 2026 (1 day)**  
 **Feature**: Issue Resolution
 
 #### Tasks:
@@ -659,6 +734,7 @@ The project consists of **3 main application types**:
 
 ### **Phase 4.6: Final Review & Documentation**
 
+**📅 January 4-5, 2026 (2 days)**  
 **Feature**: Project Finalization
 
 #### Tasks:
@@ -706,16 +782,17 @@ The project consists of **3 main application types**:
 
 ## 📋 Summary Checklist
 
-### Week 1 Deliverables
+### Week 1 Deliverables (Dec 8-14, 2025)
 
 - [ ] All UI issues identified and documented
 - [ ] Landing page fully responsive
 - [ ] Portal dashboard refined
 - [ ] SuperAdmin interface polished
-- [ ] Tailwind CSS errors fixed
+- [ ] Tailwind CSS errors fixed (172 instances)
 - [ ] Component cleanup completed
+- [ ] Package.json name fixed
 
-### Week 2 Deliverables
+### Week 2 Deliverables (Dec 15-21, 2025)
 
 - [ ] Authentication logic implemented
 - [ ] Role-based access working
@@ -723,24 +800,27 @@ The project consists of **3 main application types**:
 - [ ] Business logic validated
 - [ ] Notification system functional
 - [ ] Error handling comprehensive
+- [ ] Form validations complete
 
-### Week 3 Deliverables
+### Week 3 Deliverables (Dec 22-28, 2025)
 
 - [ ] All API endpoints integrated
 - [ ] Mock data replaced with real APIs
 - [ ] Authentication flow connected
-- [ ] Payment gateway integrated
+- [ ] Payment gateway integrated (KHQR)
 - [ ] Map services functional
 - [ ] Error handling for API failures
+- [ ] Environment variables configured
 
-### Week 4 Deliverables
+### Week 4 Deliverables (Dec 29, 2025 - Jan 5, 2026)
 
 - [ ] All features tested end-to-end
 - [ ] Cross-browser compatibility verified
-- [ ] Performance targets met
-- [ ] All bugs fixed
+- [ ] Performance targets met (Lighthouse >90)
+- [ ] All bugs fixed (P0, P1, P2, P3)
 - [ ] Documentation complete
 - [ ] Production ready
+- [ ] **Final Delivery: January 5, 2026**
 
 ---
 
