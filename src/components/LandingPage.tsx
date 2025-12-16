@@ -1,19 +1,19 @@
-import { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
-import { motion } from 'motion/react';
-import { 
-  MapPin, 
-  Route, 
-  Search, 
-  Map, 
-  Zap, 
-  Shield, 
-  Code, 
-  Clock, 
-  ArrowRight, 
-  CheckCircle2, 
-  Globe, 
-  TrendingUp, 
-  Users, 
+import { useState, useEffect, useRef, useCallback, useMemo, memo } from "react";
+import { motion } from "motion/react";
+import {
+  MapPin,
+  Route,
+  Search,
+  Map,
+  Zap,
+  Shield,
+  Code,
+  Clock,
+  ArrowRight,
+  CheckCircle2,
+  Globe,
+  TrendingUp,
+  Users,
   Star,
   ChevronRight,
   BarChart3,
@@ -25,14 +25,14 @@ import {
   Download,
   DollarSign,
   Navigation,
-  Calendar as CalendarIcon
-} from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
-import { Button } from './ui/button';
-import { Card } from './ui/card';
-import { Badge } from './ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { useLanguage } from './LanguageContext';
+  Calendar as CalendarIcon,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { Button } from "./ui/button";
+import { Card } from "./ui/card";
+import { Badge } from "./ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { useLanguage } from "./LanguageContext";
 import { apiServiceManager } from "../services/apiService";
 import type { PricingTier } from "../types/api";
 
@@ -234,18 +234,12 @@ const API_ENDPOINT_CONFIG = [
   },
 ];
 
-const API_CATEGORIES = [
-  "geocoding",
-  "places",
-  "routing",
-  "maps",
-] as const;
+const API_CATEGORIES = ["geocoding", "places", "routing", "maps"] as const;
 
 const CATEGORY_COLORS: Record<string, string> = {
   geocoding: "bg-blue-500/10 text-blue-400 border-blue-500/30",
   routing: "bg-green-500/10 text-green-400 border-green-500/30",
-  places:
-    "bg-purple-500/10 text-purple-400 border-purple-500/30",
+  places: "bg-purple-500/10 text-purple-400 border-purple-500/30",
   maps: "bg-orange-500/10 text-orange-400 border-orange-500/30",
 };
 
@@ -272,7 +266,7 @@ const AnimatedGrid = memo(
         }}
       />
     </div>
-  ),
+  )
 );
 AnimatedGrid.displayName = "AnimatedGrid";
 
@@ -381,16 +375,12 @@ const FeatureCard = memo(
           >
             <feature.icon className="w-6 h-6" />
           </div>
-          <h3 className={`text-xl mb-2 ${fontClass}`}>
-            {feature.title}
-          </h3>
-          <p className={`text-zinc-400 ${fontClass}`}>
-            {feature.description}
-          </p>
+          <h3 className={`text-xl mb-2 ${fontClass}`}>{feature.title}</h3>
+          <p className={`text-zinc-400 ${fontClass}`}>{feature.description}</p>
         </div>
       </Card>
     </motion.div>
-  ),
+  )
 );
 FeatureCard.displayName = "FeatureCard";
 
@@ -415,11 +405,9 @@ const BenefitItem = memo(
       <div className="w-5 h-5 rounded-full bg-[#1b5ba5]/20 flex items-center justify-center flex-shrink-0">
         <Check className="w-3 h-3 text-[#1b5ba5]" />
       </div>
-      <span className={`text-zinc-300 ${fontClass}`}>
-        {benefit.text}
-      </span>
+      <span className={`text-zinc-300 ${fontClass}`}>{benefit.text}</span>
     </motion.div>
-  ),
+  )
 );
 BenefitItem.displayName = "BenefitItem";
 
@@ -440,22 +428,16 @@ const BenefitCardItem = memo(
           <div
             className={`w-10 h-10 rounded-lg bg-${item.color}-500/10 flex items-center justify-center flex-shrink-0`}
           >
-            <item.icon
-              className={`w-5 h-5 text-${item.color}-500`}
-            />
+            <item.icon className={`w-5 h-5 text-${item.color}-500`} />
           </div>
           <div>
-            <h4 className={`text-lg mb-2 ${fontClass}`}>
-              {item.title}
-            </h4>
-            <p className={`text-zinc-400 text-sm ${fontClass}`}>
-              {item.desc}
-            </p>
+            <h4 className={`text-lg mb-2 ${fontClass}`}>{item.title}</h4>
+            <p className={`text-zinc-400 text-sm ${fontClass}`}>{item.desc}</p>
           </div>
         </div>
       </Card>
     </div>
-  ),
+  )
 );
 BenefitCardItem.displayName = "BenefitCardItem";
 
@@ -524,17 +506,11 @@ const PricingCard = memo(
 
           <div className="relative z-10">
             <div className="mb-6">
-              <h3 className="text-2xl mb-2 font-en">
-                {usage.label} Requests
-              </h3>
-              <p
-                className={`text-zinc-400 text-sm ${fontClass}`}
-              >
+              <h3 className="text-2xl mb-2 font-en">{usage.label} Requests</h3>
+              <p className={`text-zinc-400 text-sm ${fontClass}`}>
                 {usage.description}
               </p>
-              <p className="text-zinc-500 text-xs mt-1 font-en">
-                per month
-              </p>
+              <p className="text-zinc-500 text-xs mt-1 font-en">per month</p>
             </div>
 
             <div className="mb-4 pb-4 border-b border-zinc-800">
@@ -554,9 +530,7 @@ const PricingCard = memo(
                   {t.landing.rokTenhMap}
                 </span>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-2xl text-[#1b5ba5]">
-                    $
-                  </span>
+                  <span className="text-2xl text-[#1b5ba5]">$</span>
                   <span className="text-4xl text-[#1b5ba5] font-en">
                     {roktenhCost.toFixed(2)}
                   </span>
@@ -596,9 +570,7 @@ const PricingCard = memo(
                   transition={{ delay: i * 0.1 }}
                 >
                   <Check className="w-5 h-5 text-[#1b5ba5] flex-shrink-0 mt-0.5" />
-                  <span className="text-zinc-300 text-sm font-en">
-                    {text}
-                  </span>
+                  <span className="text-zinc-300 text-sm font-en">{text}</span>
                 </motion.li>
               ))}
             </ul>
@@ -611,9 +583,7 @@ const PricingCard = memo(
                   : "bg-zinc-800 hover:bg-zinc-700 text-white"
               } ${fontClass} relative overflow-hidden group`}
             >
-              <span className="relative z-10">
-                {t.landing.startSavingNow}
-              </span>
+              <span className="relative z-10">{t.landing.startSavingNow}</span>
               {isPopular && (
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-[#1b5ba5] to-cyan-500"
@@ -627,7 +597,7 @@ const PricingCard = memo(
         </Card>
       </motion.div>
     );
-  },
+  }
 );
 PricingCard.displayName = "PricingCard";
 
@@ -648,7 +618,7 @@ const APIEndpointCard = memo(
       (category: string) =>
         CATEGORY_COLORS[category] ||
         "bg-zinc-500/10 text-zinc-400 border-zinc-500/30",
-      [],
+      []
     );
 
     return (
@@ -663,22 +633,14 @@ const APIEndpointCard = memo(
           <div className="space-y-4">
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-2">
-                <h3
-                  className={`text-lg text-white ${fontClass}`}
-                >
+                <h3 className={`text-lg text-white ${fontClass}`}>
                   {endpoint.name}
                 </h3>
-                <Badge
-                  className={getCategoryColor(
-                    endpoint.category,
-                  )}
-                >
+                <Badge className={getCategoryColor(endpoint.category)}>
                   {endpoint.category}
                 </Badge>
               </div>
-              <p
-                className={`text-sm text-zinc-400 ${fontClass}`}
-              >
+              <p className={`text-sm text-zinc-400 ${fontClass}`}>
                 {endpoint.description}
               </p>
             </div>
@@ -696,9 +658,7 @@ const APIEndpointCard = memo(
             </div>
 
             <div className="space-y-2">
-              <p
-                className={`text-sm text-zinc-300 ${fontClass}`}
-              >
+              <p className={`text-sm text-zinc-300 ${fontClass}`}>
                 {t.landing.exampleRequest}
               </p>
               <CodeBlockSimple
@@ -709,9 +669,7 @@ const APIEndpointCard = memo(
             </div>
 
             <div className="space-y-2">
-              <p
-                className={`text-sm text-zinc-300 ${fontClass}`}
-              >
+              <p className={`text-sm text-zinc-300 ${fontClass}`}>
                 {t.landing.exampleResponse}
               </p>
               <CodeBlockSimple
@@ -727,7 +685,7 @@ const APIEndpointCard = memo(
         </Card>
       </motion.div>
     );
-  },
+  }
 );
 APIEndpointCard.displayName = "APIEndpointCard";
 
@@ -738,21 +696,21 @@ const APIEndpointsDisplay = memo(
       useState<(typeof API_CATEGORIES)[number]>("geocoding");
 
     const filteredEndpoints = API_ENDPOINT_CONFIG.filter(
-      (e) => e.category === activeCategory,
+      (e) => e.category === activeCategory
     );
 
     const handleCategoryChange = useCallback(
       (category: (typeof API_CATEGORIES)[number]) => {
         setActiveCategory(category);
       },
-      [],
+      []
     );
 
     const getCategoryColor = useCallback(
       (category: string) =>
         CATEGORY_COLORS[category] ||
         "bg-zinc-500/10 text-zinc-400 border-zinc-500/30",
-      [],
+      []
     );
 
     return (
@@ -762,7 +720,7 @@ const APIEndpointsDisplay = memo(
             <button
               key={category}
               onClick={() => handleCategoryChange(category)}
-              className={`px-4 py-2 rounded-lg border capitalize transition-all ${fontClass} ${
+              className={`px-4 py-2 rounded-lg border capitalize transition-all cursor-pointer ${fontClass} ${
                 activeCategory === category
                   ? getCategoryColor(category)
                   : "bg-zinc-900/50 text-zinc-400 border-zinc-800 hover:border-zinc-700"
@@ -795,7 +753,7 @@ const APIEndpointsDisplay = memo(
         </div>
       </>
     );
-  },
+  }
 );
 APIEndpointsDisplay.displayName = "APIEndpointsDisplay";
 
@@ -811,9 +769,7 @@ interface LandingPageProps {
  * Landing page component for RokTenh Map API platform
  * Features modern AI-style animations, pricing calculator, and comprehensive API documentation
  */
-export function LandingPage({
-  onGetStarted,
-}: LandingPageProps) {
+export function LandingPage({ onGetStarted }: LandingPageProps) {
   const { t, language, setLanguage } = useLanguage();
   const fontClass = language === "km" ? "font-kh" : "font-en";
 
@@ -822,9 +778,7 @@ export function LandingPage({
     x: 0,
     y: 0,
   });
-  const [pricingTiers, setPricingTiers] = useState<
-    PricingTier[]
-  >([]);
+  const [pricingTiers, setPricingTiers] = useState<PricingTier[]>([]);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [activeCardIndex, setActiveCardIndex] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
@@ -839,8 +793,7 @@ export function LandingPage({
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
     window.addEventListener("mousemove", handleMouseMove);
-    return () =>
-      window.removeEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
   // Track scroll position for "Go to Top" button
@@ -849,8 +802,7 @@ export function LandingPage({
       setShowScrollTop(window.scrollY > 500);
     };
     window.addEventListener("scroll", handleScroll);
-    return () =>
-      window.removeEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Fetch pricing tiers from backend
@@ -879,16 +831,12 @@ export function LandingPage({
     };
 
     carousel.addEventListener("scroll", handleScroll);
-    return () =>
-      carousel.removeEventListener("scroll", handleScroll);
+    return () => carousel.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Smooth scroll handler
   const handleSmoothScroll = useCallback(
-    (
-      e: React.MouseEvent<HTMLAnchorElement>,
-      targetId: string,
-    ) => {
+    (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
       e.preventDefault();
       const element = document.getElementById(targetId);
       if (element) {
@@ -898,22 +846,19 @@ export function LandingPage({
         });
       }
     },
-    [],
+    []
   );
 
   // Mouse drag handlers for pricing carousel
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      const carousel = pricingCarouselRef.current;
-      if (!carousel) return;
+  const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const carousel = pricingCarouselRef.current;
+    if (!carousel) return;
 
-      setIsDragging(true);
-      setStartX(e.pageX - carousel.offsetLeft);
-      setScrollLeft(carousel.scrollLeft);
-      carousel.style.cursor = "grabbing";
-    },
-    [],
-  );
+    setIsDragging(true);
+    setStartX(e.pageX - carousel.offsetLeft);
+    setScrollLeft(carousel.scrollLeft);
+    carousel.style.cursor = "grabbing";
+  }, []);
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -927,7 +872,7 @@ export function LandingPage({
       const walk = (x - startX) * 2;
       carousel.scrollLeft = scrollLeft - walk;
     },
-    [isDragging, startX, scrollLeft],
+    [isDragging, startX, scrollLeft]
   );
 
   const handleMouseUp = useCallback(() => {
@@ -962,10 +907,7 @@ export function LandingPage({
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
-      <AnimatedGrid
-        mouseX={mousePosition.x}
-        mouseY={mousePosition.y}
-      />
+      <AnimatedGrid mouseX={mousePosition.x} mouseY={mousePosition.y} />
       <FloatingOrbs />
 
       {/* Navigation */}
@@ -978,51 +920,135 @@ export function LandingPage({
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8">
+              <svg
+                width="40"
+                height="40"
+                viewBox="0 0 40 40"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-8 h-8"
+              >
                 <g clipPath="url(#clip0_55_5566)">
                   <g filter="url(#filter0_dd_55_5566)">
-                    <rect width="40" height="40" rx="5" fill="url(#paint0_linear_55_5566)"/>
-                    <path fillRule="evenodd" clipRule="evenodd" d="M9.7902 15.1211L27.8408 19.7402C27.4318 20.5285 26.8841 21.2685 26.1976 21.9225L20.0029 27.8393L13.8083 21.9225C12.4821 20.6558 11.6731 19.0777 11.3794 17.4289L9.28929 16.8937C8.95415 17.2035 8.49649 17.3945 7.99378 17.3945C6.96314 17.3945 6.12891 16.596 6.12891 15.6133C6.12891 14.6306 6.96495 13.832 7.99378 13.832C8.84604 13.832 9.56497 14.3776 9.7884 15.1228L9.7902 15.1211ZM7.99559 14.8061C8.46226 14.8061 8.84064 15.1675 8.84064 15.6133C8.84064 16.059 8.46226 16.4204 7.99559 16.4204C7.52892 16.4204 7.15053 16.059 7.15053 15.6133C7.15053 15.1675 7.52892 14.8061 7.99559 14.8061Z" fill="white"/>
-                    <path fillRule="evenodd" clipRule="evenodd" d="M26.1957 10.0914C27.9435 11.7608 28.7939 13.974 28.7489 16.1735L30.839 16.7087C31.1741 16.3989 31.6318 16.2079 32.1345 16.2079C33.1651 16.2079 33.9994 17.0064 33.9994 17.9891C33.9994 18.9718 33.1633 19.7704 32.1345 19.7704C31.2822 19.7704 30.5633 19.2248 30.3399 18.4796L11.5938 13.6815C13.4172 7.59425 21.4731 5.57896 26.1957 10.0897V10.0914ZM32.1345 17.1837C32.6012 17.1837 32.9795 17.5451 32.9795 17.9909C32.9795 18.4366 32.6012 18.798 32.1345 18.798C31.6678 18.798 31.2894 18.4366 31.2894 17.9909C31.2894 17.5451 31.6678 17.1837 32.1345 17.1837Z" fill="white"/>
-                    <path d="M27.2136 29.1811C27.1614 29.0492 27.0934 28.938 27.021 28.8427C26.8753 28.6519 26.716 28.5205 26.5596 28.4094C26.4028 28.2982 26.244 28.2142 26.0867 28.1381C25.9289 28.0625 25.772 27.9993 25.6152 27.9425C25.301 27.8288 24.9874 27.7448 24.6741 27.6742C24.3609 27.604 24.0482 27.5482 23.7355 27.5032C23.4233 27.4553 23.111 27.4197 22.7993 27.3891C22.4875 27.3585 22.1762 27.3343 21.865 27.3135C21.7327 27.3051 21.6 27.2972 21.4673 27.2903C21.392 27.5116 21.3177 27.7364 21.2443 27.9647C22.0348 28.019 22.8195 28.1352 23.5806 28.3254C24.1578 28.4721 24.7267 28.6544 25.2378 28.8975C25.4912 29.0176 25.732 29.1589 25.9134 29.311C26.0042 29.3856 26.0766 29.4647 26.1132 29.5269C26.1321 29.5581 26.1408 29.5833 26.1436 29.5981C26.1461 29.6139 26.1427 29.6173 26.1403 29.6198C26.1364 29.6218 26.134 29.6233 26.1272 29.6346C26.12 29.6455 26.107 29.6658 26.0853 29.6905C26.0418 29.7414 25.9656 29.8081 25.8724 29.8698C25.6837 29.9953 25.4366 30.1025 25.1804 30.1929C24.9222 30.2833 24.6481 30.3555 24.3691 30.4167C24.0897 30.4775 23.8045 30.5274 23.5164 30.5669C23.2288 30.6099 22.9383 30.6425 22.6463 30.6697C22.3548 30.6979 22.0619 30.7201 21.768 30.7394C21.1806 30.7764 20.5904 30.7982 19.9993 30.8051C19.7039 30.8095 19.4081 30.8085 19.1127 30.8006C18.8179 30.7932 18.523 30.7828 18.2286 30.7641C17.6408 30.728 17.0549 30.6697 16.4802 30.5793C15.9073 30.4879 15.3384 30.3673 14.8215 30.185C14.5652 30.0941 14.3191 29.9859 14.1309 29.8629C14.0368 29.8021 13.9601 29.7374 13.9161 29.688C13.8939 29.6633 13.88 29.644 13.8727 29.6337C13.865 29.6228 13.8616 29.6213 13.8573 29.6193C13.8544 29.6173 13.85 29.6129 13.8524 29.5971C13.8539 29.5813 13.8626 29.5556 13.8809 29.5245C13.9171 29.4607 13.9895 29.3797 14.0793 29.3036C14.2602 29.15 14.5025 29.0087 14.7563 28.8896C15.0126 28.7695 15.2843 28.6648 15.5632 28.5744C15.8427 28.484 16.1288 28.4039 16.4194 28.3367C17.1833 28.1584 17.9685 28.0457 18.7599 27.9855C18.6823 27.7424 18.6031 27.5032 18.523 27.2676C18.3922 27.273 18.2614 27.2804 18.1306 27.2888C17.5076 27.3279 16.8841 27.3906 16.2606 27.4904C15.6361 27.5927 15.0126 27.7241 14.3862 27.9499C14.0735 28.0665 13.7583 28.2004 13.4432 28.4163C13.2864 28.5255 13.1266 28.6559 12.9804 28.8446C12.9075 28.9395 12.839 29.0507 12.7859 29.1816C12.7343 29.3125 12.6995 29.4642 12.6957 29.6193C12.6918 29.7745 12.7198 29.9291 12.7666 30.065C12.8134 30.2008 12.8776 30.3184 12.9461 30.4202C13.0846 30.6233 13.24 30.7695 13.3925 30.894C13.5465 31.019 13.7009 31.1198 13.8563 31.2112C14.0112 31.3016 14.1666 31.3807 14.3225 31.4528C14.6338 31.5956 14.9455 31.7127 15.2592 31.8125C15.5724 31.9118 15.8861 31.9987 16.2012 32.0704C17.4598 32.3599 18.73 32.4819 19.9997 32.4992C21.2694 32.5121 22.544 32.3905 23.8006 32.0827C24.1148 32.0047 24.428 31.9152 24.7403 31.812C25.0525 31.7082 25.3633 31.5892 25.6741 31.4449C25.9849 31.2991 26.2942 31.1321 26.6021 30.8881C26.7556 30.7646 26.9105 30.6198 27.05 30.4182C27.119 30.3174 27.1836 30.2003 27.2309 30.0645C27.2787 29.9296 27.3067 29.775 27.3038 29.6198C27.3009 29.4647 27.2671 29.313 27.2145 29.1816L27.2136 29.1811Z" fill="url(#paint1_linear_55_5566)"/>
+                    <rect
+                      width="40"
+                      height="40"
+                      rx="5"
+                      fill="url(#paint0_linear_55_5566)"
+                    />
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M9.7902 15.1211L27.8408 19.7402C27.4318 20.5285 26.8841 21.2685 26.1976 21.9225L20.0029 27.8393L13.8083 21.9225C12.4821 20.6558 11.6731 19.0777 11.3794 17.4289L9.28929 16.8937C8.95415 17.2035 8.49649 17.3945 7.99378 17.3945C6.96314 17.3945 6.12891 16.596 6.12891 15.6133C6.12891 14.6306 6.96495 13.832 7.99378 13.832C8.84604 13.832 9.56497 14.3776 9.7884 15.1228L9.7902 15.1211ZM7.99559 14.8061C8.46226 14.8061 8.84064 15.1675 8.84064 15.6133C8.84064 16.059 8.46226 16.4204 7.99559 16.4204C7.52892 16.4204 7.15053 16.059 7.15053 15.6133C7.15053 15.1675 7.52892 14.8061 7.99559 14.8061Z"
+                      fill="white"
+                    />
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M26.1957 10.0914C27.9435 11.7608 28.7939 13.974 28.7489 16.1735L30.839 16.7087C31.1741 16.3989 31.6318 16.2079 32.1345 16.2079C33.1651 16.2079 33.9994 17.0064 33.9994 17.9891C33.9994 18.9718 33.1633 19.7704 32.1345 19.7704C31.2822 19.7704 30.5633 19.2248 30.3399 18.4796L11.5938 13.6815C13.4172 7.59425 21.4731 5.57896 26.1957 10.0897V10.0914ZM32.1345 17.1837C32.6012 17.1837 32.9795 17.5451 32.9795 17.9909C32.9795 18.4366 32.6012 18.798 32.1345 18.798C31.6678 18.798 31.2894 18.4366 31.2894 17.9909C31.2894 17.5451 31.6678 17.1837 32.1345 17.1837Z"
+                      fill="white"
+                    />
+                    <path
+                      d="M27.2136 29.1811C27.1614 29.0492 27.0934 28.938 27.021 28.8427C26.8753 28.6519 26.716 28.5205 26.5596 28.4094C26.4028 28.2982 26.244 28.2142 26.0867 28.1381C25.9289 28.0625 25.772 27.9993 25.6152 27.9425C25.301 27.8288 24.9874 27.7448 24.6741 27.6742C24.3609 27.604 24.0482 27.5482 23.7355 27.5032C23.4233 27.4553 23.111 27.4197 22.7993 27.3891C22.4875 27.3585 22.1762 27.3343 21.865 27.3135C21.7327 27.3051 21.6 27.2972 21.4673 27.2903C21.392 27.5116 21.3177 27.7364 21.2443 27.9647C22.0348 28.019 22.8195 28.1352 23.5806 28.3254C24.1578 28.4721 24.7267 28.6544 25.2378 28.8975C25.4912 29.0176 25.732 29.1589 25.9134 29.311C26.0042 29.3856 26.0766 29.4647 26.1132 29.5269C26.1321 29.5581 26.1408 29.5833 26.1436 29.5981C26.1461 29.6139 26.1427 29.6173 26.1403 29.6198C26.1364 29.6218 26.134 29.6233 26.1272 29.6346C26.12 29.6455 26.107 29.6658 26.0853 29.6905C26.0418 29.7414 25.9656 29.8081 25.8724 29.8698C25.6837 29.9953 25.4366 30.1025 25.1804 30.1929C24.9222 30.2833 24.6481 30.3555 24.3691 30.4167C24.0897 30.4775 23.8045 30.5274 23.5164 30.5669C23.2288 30.6099 22.9383 30.6425 22.6463 30.6697C22.3548 30.6979 22.0619 30.7201 21.768 30.7394C21.1806 30.7764 20.5904 30.7982 19.9993 30.8051C19.7039 30.8095 19.4081 30.8085 19.1127 30.8006C18.8179 30.7932 18.523 30.7828 18.2286 30.7641C17.6408 30.728 17.0549 30.6697 16.4802 30.5793C15.9073 30.4879 15.3384 30.3673 14.8215 30.185C14.5652 30.0941 14.3191 29.9859 14.1309 29.8629C14.0368 29.8021 13.9601 29.7374 13.9161 29.688C13.8939 29.6633 13.88 29.644 13.8727 29.6337C13.865 29.6228 13.8616 29.6213 13.8573 29.6193C13.8544 29.6173 13.85 29.6129 13.8524 29.5971C13.8539 29.5813 13.8626 29.5556 13.8809 29.5245C13.9171 29.4607 13.9895 29.3797 14.0793 29.3036C14.2602 29.15 14.5025 29.0087 14.7563 28.8896C15.0126 28.7695 15.2843 28.6648 15.5632 28.5744C15.8427 28.484 16.1288 28.4039 16.4194 28.3367C17.1833 28.1584 17.9685 28.0457 18.7599 27.9855C18.6823 27.7424 18.6031 27.5032 18.523 27.2676C18.3922 27.273 18.2614 27.2804 18.1306 27.2888C17.5076 27.3279 16.8841 27.3906 16.2606 27.4904C15.6361 27.5927 15.0126 27.7241 14.3862 27.9499C14.0735 28.0665 13.7583 28.2004 13.4432 28.4163C13.2864 28.5255 13.1266 28.6559 12.9804 28.8446C12.9075 28.9395 12.839 29.0507 12.7859 29.1816C12.7343 29.3125 12.6995 29.4642 12.6957 29.6193C12.6918 29.7745 12.7198 29.9291 12.7666 30.065C12.8134 30.2008 12.8776 30.3184 12.9461 30.4202C13.0846 30.6233 13.24 30.7695 13.3925 30.894C13.5465 31.019 13.7009 31.1198 13.8563 31.2112C14.0112 31.3016 14.1666 31.3807 14.3225 31.4528C14.6338 31.5956 14.9455 31.7127 15.2592 31.8125C15.5724 31.9118 15.8861 31.9987 16.2012 32.0704C17.4598 32.3599 18.73 32.4819 19.9997 32.4992C21.2694 32.5121 22.544 32.3905 23.8006 32.0827C24.1148 32.0047 24.428 31.9152 24.7403 31.812C25.0525 31.7082 25.3633 31.5892 25.6741 31.4449C25.9849 31.2991 26.2942 31.1321 26.6021 30.8881C26.7556 30.7646 26.9105 30.6198 27.05 30.4182C27.119 30.3174 27.1836 30.2003 27.2309 30.0645C27.2787 29.9296 27.3067 29.775 27.3038 29.6198C27.3009 29.4647 27.2671 29.313 27.2145 29.1816L27.2136 29.1811Z"
+                      fill="url(#paint1_linear_55_5566)"
+                    />
                   </g>
                 </g>
                 <defs>
-                  <filter id="filter0_dd_55_5566" x="-12" y="-2" width="64" height="64" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-                    <feFlood floodOpacity="0" result="BackgroundImageFix"/>
-                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                    <feMorphology radius="4" operator="erode" in="SourceAlpha" result="effect1_dropShadow_55_5566"/>
-                    <feOffset dy="4"/>
-                    <feGaussianBlur stdDeviation="3"/>
-                    <feComposite in2="hardAlpha" operator="out"/>
-                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
-                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_55_5566"/>
-                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                    <feMorphology radius="3" operator="erode" in="SourceAlpha" result="effect2_dropShadow_55_5566"/>
-                    <feOffset dy="10"/>
-                    <feGaussianBlur stdDeviation="7.5"/>
-                    <feComposite in2="hardAlpha" operator="out"/>
-                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
-                    <feBlend mode="normal" in2="effect1_dropShadow_55_5566" result="effect2_dropShadow_55_5566"/>
-                    <feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow_55_5566" result="shape"/>
+                  <filter
+                    id="filter0_dd_55_5566"
+                    x="-12"
+                    y="-2"
+                    width="64"
+                    height="64"
+                    filterUnits="userSpaceOnUse"
+                    colorInterpolationFilters="sRGB"
+                  >
+                    <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix
+                      in="SourceAlpha"
+                      type="matrix"
+                      values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                      result="hardAlpha"
+                    />
+                    <feMorphology
+                      radius="4"
+                      operator="erode"
+                      in="SourceAlpha"
+                      result="effect1_dropShadow_55_5566"
+                    />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="3" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix
+                      type="matrix"
+                      values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
+                    />
+                    <feBlend
+                      mode="normal"
+                      in2="BackgroundImageFix"
+                      result="effect1_dropShadow_55_5566"
+                    />
+                    <feColorMatrix
+                      in="SourceAlpha"
+                      type="matrix"
+                      values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                      result="hardAlpha"
+                    />
+                    <feMorphology
+                      radius="3"
+                      operator="erode"
+                      in="SourceAlpha"
+                      result="effect2_dropShadow_55_5566"
+                    />
+                    <feOffset dy="10" />
+                    <feGaussianBlur stdDeviation="7.5" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix
+                      type="matrix"
+                      values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
+                    />
+                    <feBlend
+                      mode="normal"
+                      in2="effect1_dropShadow_55_5566"
+                      result="effect2_dropShadow_55_5566"
+                    />
+                    <feBlend
+                      mode="normal"
+                      in="SourceGraphic"
+                      in2="effect2_dropShadow_55_5566"
+                      result="shape"
+                    />
                   </filter>
-                  <linearGradient id="paint0_linear_55_5566" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#51A2FF"/>
-                    <stop offset="1" stopColor="#091B51"/>
+                  <linearGradient
+                    id="paint0_linear_55_5566"
+                    x1="0"
+                    y1="0"
+                    x2="40"
+                    y2="40"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stopColor="#51A2FF" />
+                    <stop offset="1" stopColor="#091B51" />
                   </linearGradient>
-                  <linearGradient id="paint1_linear_55_5566" x1="19.9993" y1="27.4118" x2="19.9993" y2="31.9612" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="white" stopOpacity="0.6"/>
-                    <stop offset="1" stopColor="white"/>
+                  <linearGradient
+                    id="paint1_linear_55_5566"
+                    x1="19.9993"
+                    y1="27.4118"
+                    x2="19.9993"
+                    y2="31.9612"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stopColor="white" stopOpacity="0.6" />
+                    <stop offset="1" stopColor="white" />
                   </linearGradient>
                   <clipPath id="clip0_55_5566">
-                    <rect width="40" height="40" fill="white"/>
+                    <rect width="40" height="40" fill="white" />
                   </clipPath>
                 </defs>
               </svg>
               <div>
-                <h1 className="text-white text-base font-en">
-                  RokTenh Map
-                </h1>
+                <h1 className="text-white text-base font-en">RokTenh Map</h1>
                 <p className="text-xs text-zinc-400 font-en">
                   Map Service Platform
                 </p>
@@ -1038,18 +1064,14 @@ export function LandingPage({
             >
               <a
                 href="#features"
-                onClick={(e) =>
-                  handleSmoothScroll(e, "features")
-                }
+                onClick={(e) => handleSmoothScroll(e, "features")}
                 className={`text-zinc-300 hover:text-white transition-colors ${fontClass}`}
               >
                 {t.landing.features}
               </a>
               <a
                 href="#pricing"
-                onClick={(e) =>
-                  handleSmoothScroll(e, "pricing")
-                }
+                onClick={(e) => handleSmoothScroll(e, "pricing")}
                 className={`text-zinc-300 hover:text-white transition-colors ${fontClass}`}
               >
                 {t.landing.pricing}
@@ -1061,24 +1083,63 @@ export function LandingPage({
               >
                 {t.landing.docs}
               </a>
-              
+
               {/* Language Switcher */}
               <button
-                onClick={() => setLanguage(language === 'en' ? 'km' : 'en')}
-                className="flex items-center gap-2 text-zinc-300 hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-zinc-800/50"
+                onClick={() => setLanguage(language === "en" ? "km" : "en")}
+                className="flex items-center gap-2 text-zinc-300 hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-zinc-800/50 cursor-pointer"
                 aria-label="Change language"
               >
-                <Globe className="w-4 h-4" />
-                <span className="text-sm font-en">{language === 'en' ? 'EN' : 'ខ្មែរ'}</span>
+                {language === "en" ? (
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 512 512"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M473.655 88.276H38.345C17.167 88.276 0 105.443 0 126.621V385.38c0 21.177 17.167 38.345 38.345 38.345h435.31c21.177 0 38.345-17.167 38.345-38.345V126.621c0-21.178-17.167-38.345-38.345-38.345z"
+                      fill="#41479b"
+                    ></path>
+                    <path
+                      d="M511.469 120.282c-3.022-18.159-18.797-32.007-37.814-32.007h-9.977l-163.54 107.147V88.276h-88.276v107.147L48.322 88.276h-9.977c-19.017 0-34.792 13.847-37.814 32.007l139.778 91.58H0v88.276h140.309L.531 391.717c3.022 18.159 18.797 32.007 37.814 32.007h9.977l163.54-107.147v107.147h88.276V316.577l163.54 107.147h9.977c19.017 0 34.792-13.847 37.814-32.007l-139.778-91.58H512v-88.276H371.691l139.778-91.579z"
+                      fill="#f5f5f5"
+                    ></path>
+                    <path
+                      d="M282.483 88.276h-52.966v141.241H0v52.966h229.517v141.241h52.966V282.483H512v-52.966H282.483z"
+                      fill="#ff4b55"
+                    ></path>
+                    <path
+                      d="m24.793 421.252 186.583-121.114h-32.428L9.224 410.31a38.393 38.393 0 0 0 15.569 10.942zM346.388 300.138H313.96l180.716 117.305a38.515 38.515 0 0 0 12.287-13.075l-160.575-104.23zM4.049 109.475l157.73 102.387h32.428L15.475 95.842a38.499 38.499 0 0 0-11.426 13.633zM332.566 211.862l170.035-110.375a38.4 38.4 0 0 0-15.699-10.86L300.138 211.862h32.428z"
+                      fill="#ff4b55"
+                    ></path>
+                  </svg>
+                ) : (
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 512 512"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M473.654 423.724H38.345C17.167 423.724 0 406.557 0 385.379V126.621c0-21.177 17.167-38.345 38.345-38.345h435.309c21.177 0 38.345 17.167 38.345 38.345v258.758c0 21.178-17.168 38.345-38.345 38.345z"
+                      fill="#41479b"
+                    ></path>
+                    <path d="M0 167.721h512v176.55H0z" fill="#ff4b55"></path>
+                    <path
+                      d="M372.816 322.933v-12.516h-4.172v-8.344h-4.173v-8.344h-4.172v-8.344h-12.516v-25.031h-.001l4.173-4.173v-12.516h-4.172v-8.343h-4.172v-12.517h-4.171v-8.344h-4.172v-8.344h-4.172v-4.171h-8.345v4.171h-4.172v8.344h-4.172v8.344h-4.171v12.517h-4.172v8.343h-25.033V231.15h-4.171v-12.517h-4.172v-12.516h-4.172v-8.343h-4.172v-8.344h-4.172v-4.173h-2.086v-4.172h-4.172v4.172h-2.087v4.173h-4.171v8.344h-4.172v8.343h-4.172v12.516h-4.172v12.517h-4.172v12.515h-25.032v-8.343h-4.172v-12.517h-4.172v-8.344h-4.172v-8.344h-4.172v-4.171h-8.344v4.171h-4.172v8.344h-4.172v8.344h-4.172v12.517h-4.172v8.343h-4.172v12.516l4.17 4.173h.002v25.031h-12.515v8.344h-4.172v8.344h-4.173v8.344h-4.172v12.516h-4.172v12.516h241.975v-12.516z"
+                      fill="#f5f5f5"
+                    ></path>
+                  </svg>
+                )}
+                <span className="text-sm font-en">
+                  {language === "en" ? "EN" : "ខ្មែរ"}
+                </span>
               </button>
 
               <Button
                 onClick={onGetStarted}
-                className={`bg-[#1b5ba5] hover:bg-[#1b5ba5]/90 text-white relative overflow-hidden group ${fontClass}`}
+                className={`bg-[#1b5ba5] hover:bg-[#1b5ba5]/90 text-white relative overflow-hidden group ${fontClass} cursor-pointer`}
               >
-                <span className="relative z-10">
-                  {t.landing.getStarted}
-                </span>
+                <span className="relative z-10">{t.landing.getStarted}</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-[#1b5ba5] to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity" />
               </Button>
             </motion.div>
@@ -1135,18 +1196,59 @@ export function LandingPage({
               >
                 {t.landing.docs}
               </a>
-              
+
               {/* Language Switcher - Mobile */}
               <button
                 onClick={() => {
-                  setLanguage(language === 'en' ? 'km' : 'en');
+                  setLanguage(language === "en" ? "km" : "en");
                 }}
                 className="flex items-center gap-2 text-zinc-300 hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-zinc-800/50 w-full"
                 aria-label="Change language"
               >
-                <Globe className="w-4 h-4" />
+                {language === "en" ? (
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 512 512"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M473.655 88.276H38.345C17.167 88.276 0 105.443 0 126.621V385.38c0 21.177 17.167 38.345 38.345 38.345h435.31c21.177 0 38.345-17.167 38.345-38.345V126.621c0-21.178-17.167-38.345-38.345-38.345z"
+                      fill="#41479b"
+                    ></path>
+                    <path
+                      d="M511.469 120.282c-3.022-18.159-18.797-32.007-37.814-32.007h-9.977l-163.54 107.147V88.276h-88.276v107.147L48.322 88.276h-9.977c-19.017 0-34.792 13.847-37.814 32.007l139.778 91.58H0v88.276h140.309L.531 391.717c3.022 18.159 18.797 32.007 37.814 32.007h9.977l163.54-107.147v107.147h88.276V316.577l163.54 107.147h9.977c19.017 0 34.792-13.847 37.814-32.007l-139.778-91.58H512v-88.276H371.691l139.778-91.579z"
+                      fill="#f5f5f5"
+                    ></path>
+                    <path
+                      d="M282.483 88.276h-52.966v141.241H0v52.966h229.517v141.241h52.966V282.483H512v-52.966H282.483z"
+                      fill="#ff4b55"
+                    ></path>
+                    <path
+                      d="m24.793 421.252 186.583-121.114h-32.428L9.224 410.31a38.393 38.393 0 0 0 15.569 10.942zM346.388 300.138H313.96l180.716 117.305a38.515 38.515 0 0 0 12.287-13.075l-160.575-104.23zM4.049 109.475l157.73 102.387h32.428L15.475 95.842a38.499 38.499 0 0 0-11.426 13.633zM332.566 211.862l170.035-110.375a38.4 38.4 0 0 0-15.699-10.86L300.138 211.862h32.428z"
+                      fill="#ff4b55"
+                    ></path>
+                  </svg>
+                ) : (
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 512 512"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M473.654 423.724H38.345C17.167 423.724 0 406.557 0 385.379V126.621c0-21.177 17.167-38.345 38.345-38.345h435.309c21.177 0 38.345 17.167 38.345 38.345v258.758c0 21.178-17.168 38.345-38.345 38.345z"
+                      fill="#41479b"
+                    ></path>
+                    <path d="M0 167.721h512v176.55H0z" fill="#ff4b55"></path>
+                    <path
+                      d="M372.816 322.933v-12.516h-4.172v-8.344h-4.173v-8.344h-4.172v-8.344h-12.516v-25.031h-.001l4.173-4.173v-12.516h-4.172v-8.343h-4.172v-12.517h-4.171v-8.344h-4.172v-8.344h-4.172v-4.171h-8.345v4.171h-4.172v8.344h-4.172v8.344h-4.171v12.517h-4.172v8.343h-25.033V231.15h-4.171v-12.517h-4.172v-12.516h-4.172v-8.343h-4.172v-8.344h-4.172v-4.173h-2.086v-4.172h-4.172v4.172h-2.087v4.173h-4.171v8.344h-4.172v8.343h-4.172v12.516h-4.172v12.517h-4.172v12.515h-25.032v-8.343h-4.172v-12.517h-4.172v-8.344h-4.172v-8.344h-4.172v-4.171h-8.344v4.171h-4.172v8.344h-4.172v8.344h-4.172v12.517h-4.172v8.343h-4.172v12.516l4.17 4.173h.002v25.031h-12.515v8.344h-4.172v8.344h-4.173v8.344h-4.172v12.516h-4.172v12.516h241.975v-12.516z"
+                      fill="#f5f5f5"
+                    ></path>
+                  </svg>
+                )}
                 <span className="text-sm font-en">
-                  {language === 'en' ? 'Switch to Khmer (ខ្មែរ)' : 'Switch to English (EN)'}
+                  {language === "en"
+                    ? "Switch to Khmer (ខ្មែរ)"
+                    : "Switch to English (EN)"}
                 </span>
               </button>
 
@@ -1175,9 +1277,7 @@ export function LandingPage({
               transition={{ duration: 0.5 }}
             >
               <Zap className="w-4 h-4 text-[#1b5ba5]" />
-              <span
-                className={`text-sm text-zinc-300 ${fontClass}`}
-              >
+              <span className={`text-sm text-zinc-300 ${fontClass}`}>
                 {t.landing.badge}
               </span>
             </motion.div>
@@ -1215,7 +1315,7 @@ export function LandingPage({
               <Button
                 onClick={onGetStarted}
                 size="lg"
-                className={`bg-[#1b5ba5] hover:bg-[#1b5ba5]/90 text-white h-12 px-8 relative overflow-hidden group ${fontClass}`}
+                className={`bg-[#1b5ba5] hover:bg-[#1b5ba5]/90 text-white h-12 px-8 relative overflow-hidden group ${fontClass} cursor-pointer`}
               >
                 <span className="relative z-10 flex items-center">
                   {t.landing.startBuilding}
@@ -1233,8 +1333,7 @@ export function LandingPage({
                 size="lg"
                 onClick={(e) => {
                   e.preventDefault();
-                  const element =
-                    document.getElementById("docs");
+                  const element = document.getElementById("docs");
                   if (element) {
                     element.scrollIntoView({
                       behavior: "smooth",
@@ -1242,7 +1341,7 @@ export function LandingPage({
                     });
                   }
                 }}
-                className={`border-zinc-700 text-white hover:bg-zinc-900 h-12 px-8 ${fontClass}`}
+                className={`border-zinc-700 text-white hover:bg-zinc-900 h-12 px-8 ${fontClass} cursor-pointer`}
               >
                 <Code className="w-5 h-5 mr-2" />
                 {t.landing.viewDocs}
@@ -1328,10 +1427,7 @@ console.log(result.coordinates);
       </section>
 
       {/* Features Section */}
-      <section
-        id="features"
-        className="relative py-[20px] py-[30px] px-[0px]"
-      >
+      <section id="features" className="relative py-[20px] py-[30px] px-[0px]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             className="text-center mb-16"
@@ -1340,9 +1436,7 @@ console.log(result.coordinates);
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2
-              className={`text-3xl sm:text-5xl mb-4 ${fontClass}`}
-            >
+            <h2 className={`text-3xl sm:text-5xl mb-4 ${fontClass}`}>
               {t.landing.everythingYouNeed}
             </h2>
             <p
@@ -1386,9 +1480,7 @@ console.log(result.coordinates);
               >
                 {t.landing.whyChoose}
               </h2>
-              <p
-                className={`text-lg text-zinc-400 mb-8 ${fontClass}`}
-              >
+              <p className={`text-lg text-zinc-400 mb-8 ${fontClass}`}>
                 {t.landing.whyChooseDesc}
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1441,9 +1533,7 @@ console.log(result.coordinates);
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2
-              className={`text-3xl sm:text-5xl mb-4 ${fontClass}`}
-            >
+            <h2 className={`text-3xl sm:text-5xl mb-4 ${fontClass}`}>
               {t.landing.pricingTitle}
             </h2>
             <p
@@ -1503,9 +1593,7 @@ console.log(result.coordinates);
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2
-              className={`text-3xl sm:text-5xl mb-4 ${fontClass}`}
-            >
+            <h2 className={`text-3xl sm:text-5xl mb-4 ${fontClass}`}>
               {t.landing.apiDocumentation}
             </h2>
             <p
@@ -1531,9 +1619,7 @@ console.log(result.coordinates);
               </div>
               <div className="space-y-4">
                 <div>
-                  <p
-                    className={`text-sm text-zinc-300 mb-2 ${fontClass}`}
-                  >
+                  <p className={`text-sm text-zinc-300 mb-2 ${fontClass}`}>
                     {t.landing.quickStartStep1}
                   </p>
                   <CodeBlockSimple
@@ -1542,9 +1628,7 @@ console.log(result.coordinates);
                   />
                 </div>
                 <div>
-                  <p
-                    className={`text-sm text-zinc-300 mb-2 ${fontClass}`}
-                  >
+                  <p className={`text-sm text-zinc-300 mb-2 ${fontClass}`}>
                     {t.landing.quickStartStep2}
                   </p>
                   <CodeBlockSimple
@@ -1601,7 +1685,7 @@ console.log(result.coordinates);
             <Button
               onClick={onGetStarted}
               size="lg"
-              className={`bg-[#1b5ba5] hover:bg-[#1b5ba5]/90 text-white h-12 px-8 relative overflow-hidden group ${fontClass}`}
+              className={`bg-[#1b5ba5] hover:bg-[#1b5ba5]/90 text-white h-12 px-8 relative overflow-hidden group ${fontClass} cursor-pointer`}
             >
               <span className="relative z-10 flex items-center">
                 {t.landing.createFreeAccount}
