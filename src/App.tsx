@@ -1041,7 +1041,7 @@ function AppContent() {
                     ${(users.find(u => u.email === user?.email)?.totalBalance || 0).toFixed(2)} <span className="text-sm font-en">USD</span>
                   </div>
                   <Button
-                    className="w-full bg-[#1b5ba5] hover:bg-[#1b5ba5]/90 text-white h-10 py-[8px] px-[12px] py-[0px]"
+                    className="w-full bg-[#1b5ba5] hover:bg-[#1b5ba5]/90 text-white h-10 py-[8px] px-[12px] py-[0px] cursor-pointer"
                     onClick={() => {
                       setIsTopUpDialogOpen(true);
                       setIsMobileMenuOpen(false);
