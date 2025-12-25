@@ -488,16 +488,55 @@ export function Login({
             {/* Language Switcher */}
             <div className="absolute top-4 right-4 lg:top-6 lg:right-6 z-10">
               <Button
-                variant="ghost"
-                size="sm"
-                onClick={toggleLanguage}
-                className="flex items-center gap-5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 p-0"
-              >
-                <Globe className="w-4 h-4" />
-                <span className="font-en">
-                  {language === "en" ? "KH" : "EN"}
-                </span>
-              </Button>
+                              variant="ghost"
+                              size="sm"
+                              onClick={toggleLanguage}
+                              className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 cursor-pointer"
+                            >
+                              {language === "en" ? (
+                                <svg
+                                  className="w-4 h-4"
+                                  viewBox="0 0 512 512"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M473.655 88.276H38.345C17.167 88.276 0 105.443 0 126.621V385.38c0 21.177 17.167 38.345 38.345 38.345h435.31c21.177 0 38.345-17.167 38.345-38.345V126.621c0-21.178-17.167-38.345-38.345-38.345z"
+                                    fill="#41479b"
+                                  ></path>
+                                  <path
+                                    d="M511.469 120.282c-3.022-18.159-18.797-32.007-37.814-32.007h-9.977l-163.54 107.147V88.276h-88.276v107.147L48.322 88.276h-9.977c-19.017 0-34.792 13.847-37.814 32.007l139.778 91.58H0v88.276h140.309L.531 391.717c3.022 18.159 18.797 32.007 37.814 32.007h9.977l163.54-107.147v107.147h88.276V316.577l163.54 107.147h9.977c19.017 0 34.792-13.847 37.814-32.007l-139.778-91.58H512v-88.276H371.691l139.778-91.579z"
+                                    fill="#f5f5f5"
+                                  ></path>
+                                  <path
+                                    d="M282.483 88.276h-52.966v141.241H0v52.966h229.517v141.241h52.966V282.483H512v-52.966H282.483z"
+                                    fill="#ff4b55"
+                                  ></path>
+                                  <path
+                                    d="m24.793 421.252 186.583-121.114h-32.428L9.224 410.31a38.393 38.393 0 0 0 15.569 10.942zM346.388 300.138H313.96l180.716 117.305a38.515 38.515 0 0 0 12.287-13.075l-160.575-104.23zM4.049 109.475l157.73 102.387h32.428L15.475 95.842a38.499 38.499 0 0 0-11.426 13.633zM332.566 211.862l170.035-110.375a38.4 38.4 0 0 0-15.699-10.86L300.138 211.862h32.428z"
+                                    fill="#ff4b55"
+                                  ></path>
+                                </svg>
+                              ) : (
+                                <svg
+                                  className="w-4 h-4"
+                                  viewBox="0 0 512 512"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M473.654 423.724H38.345C17.167 423.724 0 406.557 0 385.379V126.621c0-21.177 17.167-38.345 38.345-38.345h435.309c21.177 0 38.345 17.167 38.345 38.345v258.758c0 21.178-17.168 38.345-38.345 38.345z"
+                                    fill="#41479b"
+                                  ></path>
+                                  <path d="M0 167.721h512v176.55H0z" fill="#ff4b55"></path>
+                                  <path
+                                    d="M372.816 322.933v-12.516h-4.172v-8.344h-4.173v-8.344h-4.172v-8.344h-12.516v-25.031h-.001l4.173-4.173v-12.516h-4.172v-8.343h-4.172v-12.517h-4.171v-8.344h-4.172v-8.344h-4.172v-4.171h-8.345v4.171h-4.172v8.344h-4.172v8.344h-4.171v12.517h-4.172v8.343h-25.033V231.15h-4.171v-12.517h-4.172v-12.516h-4.172v-8.343h-4.172v-8.344h-4.172v-4.173h-2.086v-4.172h-4.172v4.172h-2.087v4.173h-4.171v8.344h-4.172v8.343h-4.172v12.516h-4.172v12.517h-4.172v12.515h-25.032v-8.343h-4.172v-12.517h-4.172v-8.344h-4.172v-8.344h-4.172v-4.171h-8.344v4.171h-4.172v8.344h-4.172v8.344h-4.172v12.517h-4.172v8.343h-4.172v12.516l4.17 4.173h.002v25.031h-12.515v8.344h-4.172v8.344h-4.173v8.344h-4.172v12.516h-4.172v12.516h241.975v-12.516z"
+                                    fill="#f5f5f5"
+                                  ></path>
+                                </svg>
+                              )}
+                              <span className="font-en">
+                                {language === "en" ? "EN" : "KH"}
+                              </span>
+                            </Button>
             </div>
 
             <div
@@ -613,9 +652,9 @@ export function Login({
                         tabIndex={-1}
                       >
                         {showPassword ? (
-                          <EyeOff className="w-5 h-5" />
+                          <EyeOff className="w-5 h-5 cursor-pointer" />
                         ) : (
-                          <Eye className="w-5 h-5" />
+                          <Eye className="w-5 h-5 cursor-pointer" />
                         )}
                       </button>
                     </div>
@@ -636,7 +675,7 @@ export function Login({
                     <button
                       type="button"
                       onClick={() => setView("forgotPassword")}
-                      className={`text-xs sm:text-sm text-blue-600 dark:text-blue-400 hover:underline ${fontClass} p-0`}
+                      className={`text-xs sm:text-sm text-blue-600 dark:text-blue-400 hover:underline ${fontClass} p-0 cursor-pointer`}
                     >
                       {t.auth.forgotPasswordBtn}
                     </button>
@@ -645,7 +684,7 @@ export function Login({
                   <Button
                     type="submit"
                     disabled={isLoading}
-                    className={`w-full bg-[#1B5BA5] hover:bg-[#164a8a] dark:bg-[#1B5BA5] dark:hover:bg-[#164a8a] text-white ${fontClass}`}
+                    className={`w-full bg-[#1B5BA5] hover:bg-[#164a8a] dark:bg-[#1B5BA5] dark:hover:bg-[#164a8a] text-white ${fontClass} cursor-pointer`}
                   >
                     {isLoading ? (
                       <>
@@ -746,7 +785,7 @@ export function Login({
                     <button
                       type="button"
                       onClick={onSwitchToSignup}
-                      className="text-blue-600 dark:text-blue-400 hover:underline p-0"
+                      className="text-blue-600 dark:text-blue-400 hover:underline p-0 cursor-pointer"
                     >
                       {t.auth.createAccount}
                     </button>

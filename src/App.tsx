@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense, memo, useCallback, useMemo } from 'react';
+import { useState, useEffect, lazy, Suspense, memo, useCallback, useMemo, ComponentType } from 'react';
 import { toast } from 'sonner';
 import {
   Server,
@@ -86,6 +86,63 @@ import { NotificationService } from './services/notificationService';
 // Types
 import type { APIKey, APIRequest, UsageStats, ServiceEndpoint, User, Transaction } from './types/api';
 import type { Notification } from './types/notification';
+import type { Language } from './translations';
+
+type FlagIconProps = { className?: string };
+
+type LanguageOption = {
+  code: Language;
+  label: string;
+  nativeLabel: string;
+  Icon: ComponentType<FlagIconProps>;
+};
+
+const FlagUS = memo(function FlagUS({ className = 'w-5 h-5' }: FlagIconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 512 512"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M473.655 88.276H38.345C17.167 88.276 0 105.443 0 126.621V385.38c0 21.177 17.167 38.345 38.345 38.345h435.31c21.177 0 38.345-17.167 38.345-38.345V126.621c0-21.178-17.167-38.345-38.345-38.345z"
+        fill="#41479b"
+      />
+      <path
+        d="M511.469 120.282c-3.022-18.159-18.797-32.007-37.814-32.007h-9.977l-163.54 107.147V88.276h-88.276v107.147L48.322 88.276h-9.977c-19.017 0-34.792 13.847-37.814 32.007l139.778 91.58H0v88.276h140.309L.531 391.717c3.022 18.159 18.797 32.007 37.814 32.007h9.977l163.54-107.147v107.147h52.966h35.31V316.577l163.54 107.147h9.977c19.017 0 34.792-13.847 37.814-32.007l-139.778-91.58H512v-88.276H371.691l139.778-91.579z"
+        fill="#f5f5f5"
+      />
+      <path
+        d="M282.483 88.276h-52.966v141.241H0v52.966h229.517v141.241h52.966V282.483H512v-52.966H282.483z"
+        fill="#ff4b55"
+      />
+      <path
+        d="m24.793 421.252 186.583-121.114h-32.428L9.224 410.31a38.393 38.393 0 0 0 15.569 10.942zM346.388 300.138H313.96l180.716 117.305a38.515 38.515 0 0 0 12.287-13.075l-160.575-104.23zM4.049 109.475l157.73 102.387h32.428L15.475 95.842a38.499 38.499 0 0 0-11.426 13.633zM332.566 211.862l170.035-110.375a38.4 38.4 0 0 0-15.699-10.86L300.138 211.862h32.428z"
+        fill="#ff4b55"
+      />
+    </svg>
+  );
+});
+
+const FlagKH = memo(function FlagKH({ className = 'w-5 h-5' }: FlagIconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 512 512"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M473.654 423.724H38.345C17.167 423.724 0 406.557 0 385.379V126.621c0-21.177 17.167-38.345 38.345-38.345h435.309c21.177 0 38.345 17.167 38.345 38.345v258.758c0 21.178-17.168 38.345-38.345 38.345z"
+        fill="#41479b"
+      />
+      <path d="M0 167.721h512v176.55H0z" fill="#ff4b55" />
+      <path
+        d="M372.816 322.933v-12.516h-4.172v-8.344h-4.173v-8.344h-4.172v-8.344h-12.516v-25.031h-.001l4.173-4.173v-12.516h-4.172v-8.343h-4.172v-12.517h-4.171v-8.344h-4.172v-8.344h-4.172v-4.171h-8.345v4.171h-4.172v8.344h-4.172v8.344h-4.171v12.517h-4.172v8.343h-25.033V231.15h-4.171v-12.517h-4.172v-12.516h-4.172v-8.343h-4.172v-8.344h-4.172v-4.173h-2.086v-4.172h-4.172v4.172h-2.087v4.173h-4.171v8.344h-4.172v8.343h-4.172v12.516h-4.172v12.517h-4.172v12.515h-25.032v-8.343h-4.172v-12.517h-4.172v-8.344h-4.172v-8.344h-4.172v-4.171h-8.344v4.171h-4.172v8.344h-4.172v8.344h-4.172v12.517h-4.172v8.343h-4.172v12.516l4.17 4.173h.002v25.031h-12.515v8.344h-4.172v8.344h-4.173v8.344h-4.172v12.516h-4.172v12.516h241.975v-12.516z"
+        fill="#f5f5f5"
+      />
+    </svg>
+  );
+});
 
 function AppContent() {
   const { user, isAuthenticated, authLoading, isNewUser, dismissWelcome, logout } = useAuth();
@@ -621,6 +678,18 @@ function AppContent() {
     }
   };
 
+  const languageOptions = useMemo<LanguageOption[]>(() => ([
+    { code: 'en', label: 'English', nativeLabel: 'English', Icon: FlagUS },
+    { code: 'km', label: 'Khmer', nativeLabel: 'ខ្មែរ', Icon: FlagKH }
+  ]), []);
+
+  const currentLanguageOption = useMemo(
+    () => languageOptions.find(option => option.code === language) ?? languageOptions[0],
+    [language, languageOptions]
+  );
+
+  const CurrentLanguageIcon = currentLanguageOption.Icon;
+
   const navItems = useMemo(() => [
     { id: 'dashboard', label: t.nav.dashboard, icon: BarChart3 },
     ...(user?.role === 'admin' ? [{ id: 'users', label: t.nav.userManagement, icon: UserCog }] : []),
@@ -703,42 +772,51 @@ function AppContent() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button 
-                  className="p-2 hover:bg-zinc-800 rounded-lg transition-colors flex items-center justify-center"
-                  onClick={() => setLanguage(language === 'en' ? 'km' : 'en')}
+                  className="p-2 px-2.5 hover:bg-zinc-800 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                  aria-label={language === 'en' ? 'Switch language' : 'ប្ដូរភាសា'}
                 >
-                  <span className="text-xl leading-none">
-                    {language === 'en' ? '🇺🇸' : '🇰🇭'}
-                  </span>
+                  <CurrentLanguageIcon className="w-5 h-5" />
+                  <ChevronDown className="w-4 h-4 text-zinc-400" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-zinc-900 border-zinc-800">
-                <div className={`px-2 py-1.5 text-xs text-zinc-500 font-medium ${language === 'en' ? 'font-en' : 'font-kh'}`}>
-                  {language === 'en' ? 'Select Language' : 'ជ្រើសរើសភាសា'}
+              <DropdownMenuContent align="end" className="w-52 bg-zinc-900 border-zinc-800">
+                <div className="px-3 py-2">
+                  <p className={`text-xs text-zinc-500 ${language === 'km' ? 'font-kh' : 'font-en'}`}>
+                    {language === 'en' ? 'Select language' : 'ជ្រើសរើសភាសា'}
+                  </p>
                 </div>
                 <DropdownMenuSeparator className="bg-zinc-800" />
-                <DropdownMenuItem 
-                  onClick={() => setLanguage('en')}
-                  className={`cursor-pointer focus:bg-zinc-800 focus:text-white ${
-                    language === 'en' ? 'text-white bg-zinc-800' : 'text-zinc-300'
-                  }`}
-                >
-                  <span className="mr-2">🇬🇧</span>
-                  English
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={() => setLanguage('km')}
-                  className={`cursor-pointer focus:bg-zinc-800 focus:text-white ${
-                    language === 'km' ? 'text-white bg-zinc-800' : 'text-zinc-300'
-                  }`}
-                >
-                  <span className="mr-2">🇰🇭</span>
-                  ភាសាខ្មែរ
-                </DropdownMenuItem>
+                {languageOptions.map((option) => {
+                  const OptionIcon = option.Icon;
+
+                  return (
+                    <DropdownMenuItem 
+                      key={option.code}
+                      onClick={() => setLanguage(option.code)}
+                      className={`cursor-pointer focus:bg-zinc-800 focus:text-white ${
+                        language === option.code ? 'text-white bg-zinc-800' : 'text-zinc-300'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 w-full">
+                        <OptionIcon className="w-5 h-5" />
+                        <div className="flex flex-col">
+                          <span className="text-sm text-white">{option.label}</span>
+                          <span className={`text-xs text-zinc-500 ${option.code === 'km' ? 'font-kh' : 'font-en'}`}>
+                            {option.nativeLabel}
+                          </span>
+                        </div>
+                        {language === option.code && (
+                          <CheckCircle className="w-4 h-4 text-blue-400 ml-auto" />
+                        )}
+                      </div>
+                    </DropdownMenuItem>
+                  );
+                })}
               </DropdownMenuContent>
             </DropdownMenu>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="p-2 hover:bg-zinc-800 rounded-lg transition-colors relative">
+                <button className="p-2 hover:bg-zinc-800 rounded-lg transition-colors relative cursor-pointer">
                   <Bell className="w-5 h-5 text-zinc-400" />
                   {notifications.filter(n => !n.read).length > 0 && (
                     <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
@@ -923,7 +1001,7 @@ function AppContent() {
                     className={`
                       w-full flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2.5 md:py-2 lg:py-2.5 rounded-lg 
                       transition-all duration-200 ease-in-out
-                      active:scale-95 touch-manipulation
+                      active:scale-95 touch-manipulation cursor-pointer
                       ${
                         activeTab === item.id
                           ? 'bg-[#1B5BA5] text-white shadow-sm'

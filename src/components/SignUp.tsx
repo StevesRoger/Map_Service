@@ -884,9 +884,9 @@ export function SignUp({ onSwitchToLogin, onBackToLanding }: SignUpProps) {
                         tabIndex={-1}
                       >
                         {showPassword ? (
-                          <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
+                          <EyeOff className="w-4 h-4 sm:w-5 sm:h-5 cursor-pointer" />
                         ) : (
-                          <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
+                          <Eye className="w-4 h-4 sm:w-5 sm:h-5 cursor-pointer" />
                         )}
                       </button>
                     </div>
@@ -957,9 +957,9 @@ export function SignUp({ onSwitchToLogin, onBackToLanding }: SignUpProps) {
                         tabIndex={-1}
                       >
                         {showConfirmPassword ? (
-                          <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
+                          <EyeOff className="w-4 h-4 sm:w-5 sm:h-5 cursor-pointer" />
                         ) : (
-                          <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
+                          <Eye className="w-4 h-4 sm:w-5 sm:h-5 cursor-pointer" />
                         )}
                       </button>
                     </div>
@@ -1034,7 +1034,7 @@ export function SignUp({ onSwitchToLogin, onBackToLanding }: SignUpProps) {
                     <button
                       type="button"
                       onClick={onSwitchToLogin}
-                      className="text-blue-600 dark:text-blue-400 hover:underline"
+                      className="text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
                     >
                       {t.auth.signInLink}
                     </button>
