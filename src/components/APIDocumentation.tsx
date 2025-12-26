@@ -56,7 +56,7 @@ export function APIDocumentation({ endpoints }: APIDocumentationProps) {
       <Tabs defaultValue={categories[0]} className="w-full">
         <TabsList className="w-full justify-start overflow-x-auto">
           {categories.map(category => (
-            <TabsTrigger key={category} value={category} className={`capitalize ${fontClass}`}>
+            <TabsTrigger key={category} value={category} className={`capitalize cursor-pointer ${fontClass}`}>
               {t.docs[category as keyof typeof t.docs] || category}
             </TabsTrigger>
           ))}
