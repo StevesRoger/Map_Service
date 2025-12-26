@@ -93,7 +93,7 @@ export function APIKeyManager({ apiKeys, onCreateKey, onDeleteKey, onToggleStatu
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className={`w-full sm:w-auto ${fontClass}`}>
+            <Button className={`w-full sm:w-auto ${fontClass} cursor-pointer`}>
               <Plus className="w-4 h-4 mr-2" />
               {t.apiKeys.createAPIKey}
             </Button>
@@ -116,7 +116,7 @@ export function APIKeyManager({ apiKeys, onCreateKey, onDeleteKey, onToggleStatu
                   className={fontClass}
                 />
               </div>
-              <Button onClick={handleCreateKey} className={`w-full ${fontClass}`}>
+              <Button onClick={handleCreateKey} className={`w-full cursor-pointer ${fontClass}`}>
                 {t.apiKeys.createButton}
               </Button>
             </div>
@@ -144,6 +144,7 @@ export function APIKeyManager({ apiKeys, onCreateKey, onDeleteKey, onToggleStatu
                     <Button
                       variant="ghost"
                       size="sm"
+                      className="cursor-pointer"
                     >
                       <Trash2 className="w-4 h-4 text-red-400" />
                     </Button>
@@ -160,12 +161,12 @@ export function APIKeyManager({ apiKeys, onCreateKey, onDeleteKey, onToggleStatu
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel className={`bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 ${fontClass}`}>
+                      <AlertDialogCancel className={`bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer ${fontClass}`}>
                         {language === 'en' ? 'Cancel' : 'បោះបង់'}
                       </AlertDialogCancel>
                       <AlertDialogAction
                         onClick={() => onDeleteKey(apiKey.id)}
-                        className={`bg-red-600 hover:bg-red-700 text-white ${fontClass}`}
+                        className={`bg-red-600 hover:bg-red-700 text-white cursor-pointer ${fontClass}`}
                       >
                         {language === 'en' ? 'Delete' : 'លុប'}
                       </AlertDialogAction>
@@ -182,6 +183,7 @@ export function APIKeyManager({ apiKeys, onCreateKey, onDeleteKey, onToggleStatu
                   variant="ghost"
                   size="sm"
                   onClick={() => copyToClipboard(apiKey.key, apiKey.id)}
+                  className="cursor-pointer"
                 >
                   {copiedKey === apiKey.id ? (
                     <Check className="w-4 h-4 text-green-400" />
