@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
-import { 
-  DollarSign, 
-  Plus, 
-  Edit2, 
-  Trash2, 
-  Eye, 
-  EyeOff, 
-  Save, 
-  X, 
-  ArrowUp, 
+import { useState, useEffect } from "react";
+import {
+  DollarSign,
+  Plus,
+  Edit2,
+  Trash2,
+  Eye,
+  EyeOff,
+  Save,
+  X,
+  ArrowUp,
   ArrowDown,
   Check,
   MapPin,
@@ -17,15 +17,15 @@ import {
   Map,
   TrendingDown,
   Zap,
-  AlertCircle
-} from 'lucide-react';
-import { Card } from './ui/card';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Badge } from './ui/badge';
-import { Alert, AlertDescription } from './ui/alert';
-import { Switch } from './ui/switch';
+  AlertCircle,
+} from "lucide-react";
+import { Card } from "./ui/card";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Badge } from "./ui/badge";
+import { Alert, AlertDescription } from "./ui/alert";
+import { Switch } from "./ui/switch";
 import {
   Dialog,
   DialogContent,
@@ -33,19 +33,19 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from './ui/dialog';
+} from "./ui/dialog";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from './ui/select';
-import { Textarea } from './ui/textarea';
-import { useLanguage } from './LanguageContext';
-import { apiServiceManager } from '../services/apiService';
-import type { APIServicePricing } from '../types/pricing';
-import { toast } from 'sonner';
+} from "./ui/select";
+import { Textarea } from "./ui/textarea";
+import { useLanguage } from "./LanguageContext";
+import { apiServiceManager } from "../services/apiService";
+import type { APIServicePricing } from "../types/pricing";
+import { toast } from "sonner";
 
 // Icon mapping
 const ICON_MAP: { [key: string]: any } = {
@@ -58,55 +58,62 @@ const ICON_MAP: { [key: string]: any } = {
 };
 
 const AVAILABLE_ICONS = [
-  { value: 'MapPin', label: 'Map Pin' },
-  { value: 'Navigation', label: 'Navigation' },
-  { value: 'Search', label: 'Search' },
-  { value: 'Map', label: 'Map' },
-  { value: 'Zap', label: 'Zap' },
-  { value: 'DollarSign', label: 'Dollar Sign' },
+  { value: "MapPin", label: "Map Pin" },
+  { value: "Navigation", label: "Navigation" },
+  { value: "Search", label: "Search" },
+  { value: "Map", label: "Map" },
+  { value: "Zap", label: "Zap" },
+  { value: "DollarSign", label: "Dollar Sign" },
 ];
 
 const CATEGORIES = [
-  { value: 'geocoding', label: 'Geocoding' },
-  { value: 'routing', label: 'Routing' },
-  { value: 'places', label: 'Places' },
-  { value: 'maps', label: 'Maps' },
-  { value: 'other', label: 'Other' },
+  { value: "geocoding", label: "Geocoding" },
+  { value: "routing", label: "Routing" },
+  { value: "places", label: "Places" },
+  { value: "maps", label: "Maps" },
+  { value: "other", label: "Other" },
 ];
 
 const COLOR_OPTIONS = [
-  { value: 'text-blue-500', bg: 'bg-blue-500/10', label: 'Blue' },
-  { value: 'text-green-500', bg: 'bg-green-500/10', label: 'Green' },
-  { value: 'text-purple-500', bg: 'bg-purple-500/10', label: 'Purple' },
-  { value: 'text-orange-500', bg: 'bg-orange-500/10', label: 'Orange' },
-  { value: 'text-red-500', bg: 'bg-red-500/10', label: 'Red' },
-  { value: 'text-yellow-500', bg: 'bg-yellow-500/10', label: 'Yellow' },
-  { value: 'text-pink-500', bg: 'bg-pink-500/10', label: 'Pink' },
-  { value: 'text-indigo-500', bg: 'bg-indigo-500/10', label: 'Indigo' },
+  { value: "text-blue-500", bg: "bg-blue-500/10", label: "Blue" },
+  { value: "text-green-500", bg: "bg-green-500/10", label: "Green" },
+  { value: "text-purple-500", bg: "bg-purple-500/10", label: "Purple" },
+  { value: "text-orange-500", bg: "bg-orange-500/10", label: "Orange" },
+  { value: "text-red-500", bg: "bg-red-500/10", label: "Red" },
+  { value: "text-yellow-500", bg: "bg-yellow-500/10", label: "Yellow" },
+  { value: "text-pink-500", bg: "bg-pink-500/10", label: "Pink" },
+  { value: "text-indigo-500", bg: "bg-indigo-500/10", label: "Indigo" },
 ];
 
 export function PricingManagement() {
   const { t, language } = useLanguage();
-  const fontClass = language === 'km' ? 'font-kh' : 'font-en';
+  const fontClass = language === "km" ? "font-kh" : "font-en";
 
   const [services, setServices] = useState<APIServicePricing[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingService, setEditingService] = useState<APIServicePricing | null>(null);
+  const [editingService, setEditingService] =
+    useState<APIServicePricing | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [serviceToDelete, setServiceToDelete] = useState<APIServicePricing | null>(null);
+  const [serviceToDelete, setServiceToDelete] =
+    useState<APIServicePricing | null>(null);
 
   // Form state
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    serviceKey: '',
-    icon: 'MapPin',
-    pricePerThousand: '',
-    googlePrice: '',
-    category: 'geocoding' as 'geocoding' | 'routing' | 'places' | 'maps' | 'other',
-    color: 'text-blue-500',
-    bgColor: 'bg-blue-500/10',
+    name: "",
+    description: "",
+    serviceKey: "",
+    icon: "MapPin",
+    pricePerThousand: "",
+    googlePrice: "",
+    category: "geocoding" as
+      | "geocoding"
+      | "routing"
+      | "places"
+      | "maps"
+      | "other",
+    color: "text-blue-500",
+    bgColor: "bg-blue-500/10",
   });
 
   useEffect(() => {
@@ -119,8 +126,8 @@ export function PricingManagement() {
       const data = await apiServiceManager.getAPIServicePricing();
       setServices(data);
     } catch (error) {
-      console.error('Failed to load services:', error);
-      toast.error('Failed to load pricing services');
+      console.error("Failed to load services:", error);
+      toast.error("Failed to load pricing services");
     } finally {
       setIsLoading(false);
     }
@@ -143,15 +150,15 @@ export function PricingManagement() {
     } else {
       setEditingService(null);
       setFormData({
-        name: '',
-        description: '',
-        serviceKey: '',
-        icon: 'MapPin',
-        pricePerThousand: '',
-        googlePrice: '',
-        category: 'geocoding',
-        color: 'text-blue-500',
-        bgColor: 'bg-blue-500/10',
+        name: "",
+        description: "",
+        serviceKey: "",
+        icon: "MapPin",
+        pricePerThousand: "",
+        googlePrice: "",
+        category: "geocoding",
+        color: "text-blue-500",
+        bgColor: "bg-blue-500/10",
       });
     }
     setIsDialogOpen(true);
@@ -164,8 +171,12 @@ export function PricingManagement() {
 
   const handleSave = async () => {
     try {
-      if (!formData.name || !formData.pricePerThousand || !formData.googlePrice) {
-        toast.error('Please fill in all required fields');
+      if (
+        !formData.name ||
+        !formData.pricePerThousand ||
+        !formData.googlePrice
+      ) {
+        toast.error("Please fill in all required fields");
         return;
       }
 
@@ -173,7 +184,7 @@ export function PricingManagement() {
       const googlePrice = parseFloat(formData.googlePrice);
 
       if (isNaN(pricePerThousand) || isNaN(googlePrice)) {
-        toast.error('Please enter valid prices');
+        toast.error("Please enter valid prices");
         return;
       }
 
@@ -186,15 +197,16 @@ export function PricingManagement() {
           pricePerThousand,
           googlePrice,
         });
-        toast.success('Service updated successfully');
+        toast.success("Service updated successfully");
       } else {
         // Create new service
-        const maxOrder = services.length > 0 
-          ? Math.max(...services.map(s => s.order)) 
-          : 0;
-        
+        const maxOrder =
+          services.length > 0 ? Math.max(...services.map((s) => s.order)) : 0;
+
         await apiServiceManager.createAPIServicePricing({
-          serviceKey: formData.serviceKey || formData.name.toLowerCase().replace(/\s+/g, '_'),
+          serviceKey:
+            formData.serviceKey ||
+            formData.name.toLowerCase().replace(/\s+/g, "_"),
           name: formData.name,
           description: formData.description,
           icon: formData.icon,
@@ -205,25 +217,25 @@ export function PricingManagement() {
           bgColor: formData.bgColor,
           order: maxOrder + 1,
         });
-        toast.success('Service created successfully');
+        toast.success("Service created successfully");
       }
 
       await loadServices();
       handleCloseDialog();
     } catch (error) {
-      console.error('Failed to save service:', error);
-      toast.error('Failed to save service');
+      console.error("Failed to save service:", error);
+      toast.error("Failed to save service");
     }
   };
 
   const handleToggleStatus = async (service: APIServicePricing) => {
     try {
       await apiServiceManager.toggleAPIServicePricingStatus(service.id);
-      toast.success(`Service ${service.isActive ? 'disabled' : 'enabled'}`);
+      toast.success(`Service ${service.isActive ? "disabled" : "enabled"}`);
       await loadServices();
     } catch (error) {
-      console.error('Failed to toggle service status:', error);
-      toast.error('Failed to update service status');
+      console.error("Failed to toggle service status:", error);
+      toast.error("Failed to update service status");
     }
   };
 
@@ -232,40 +244,46 @@ export function PricingManagement() {
 
     try {
       await apiServiceManager.deleteAPIServicePricing(serviceToDelete.id);
-      toast.success('Service deleted successfully');
+      toast.success("Service deleted successfully");
       await loadServices();
       setIsDeleteDialogOpen(false);
       setServiceToDelete(null);
     } catch (error) {
-      console.error('Failed to delete service:', error);
-      toast.error('Failed to delete service');
+      console.error("Failed to delete service:", error);
+      toast.error("Failed to delete service");
     }
   };
 
   const handleMoveUp = async (service: APIServicePricing) => {
     if (service.order === 1) return;
-    
+
     try {
-      await apiServiceManager.reorderAPIServicePricing(service.id, service.order - 1);
+      await apiServiceManager.reorderAPIServicePricing(
+        service.id,
+        service.order - 1
+      );
       await loadServices();
-      toast.success('Service moved up');
+      toast.success("Service moved up");
     } catch (error) {
-      console.error('Failed to reorder service:', error);
-      toast.error('Failed to reorder service');
+      console.error("Failed to reorder service:", error);
+      toast.error("Failed to reorder service");
     }
   };
 
   const handleMoveDown = async (service: APIServicePricing) => {
-    const maxOrder = Math.max(...services.map(s => s.order));
+    const maxOrder = Math.max(...services.map((s) => s.order));
     if (service.order === maxOrder) return;
-    
+
     try {
-      await apiServiceManager.reorderAPIServicePricing(service.id, service.order + 1);
+      await apiServiceManager.reorderAPIServicePricing(
+        service.id,
+        service.order + 1
+      );
       await loadServices();
-      toast.success('Service moved down');
+      toast.success("Service moved down");
     } catch (error) {
-      console.error('Failed to reorder service:', error);
-      toast.error('Failed to reorder service');
+      console.error("Failed to reorder service:", error);
+      toast.error("Failed to reorder service");
     }
   };
 
@@ -280,10 +298,11 @@ export function PricingManagement() {
       <div>
         <div>
           <h1 className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}>
-            {t.pricing?.apiServicePricing || 'API Service Pricing Management'}
+            {t.pricing?.apiServicePricing || "API Service Pricing Management"}
           </h1>
           <p className={`text-zinc-600 dark:text-zinc-400 mt-2 ${fontClass}`}>
-            {t.pricing?.managePricingDesc || 'Manage pricing for API services displayed on the landing page and pricing calculator'}
+            {t.pricing?.managePricingDesc ||
+              "Manage pricing for API services displayed on the landing page and pricing calculator"}
           </p>
         </div>
       </div>
@@ -291,8 +310,11 @@ export function PricingManagement() {
       {/* Info Alert */}
       <Alert className="bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900/50">
         <AlertCircle className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-        <AlertDescription className={`text-blue-700 dark:text-blue-300 ${fontClass}`}>
-          {t.pricing?.pricingInfo || 'These pricing configurations will be displayed on the landing page and used in the pricing calculator. Active services will be visible to users.'}
+        <AlertDescription
+          className={`text-blue-700 dark:text-blue-300 ${fontClass}`}
+        >
+          {t.pricing?.pricingInfo ||
+            "These pricing configurations will be displayed on the landing page and used in the pricing calculator. Active services will be visible to users."}
         </AlertDescription>
       </Alert>
 
@@ -305,17 +327,21 @@ export function PricingManagement() {
         <Card className="p-12 text-center bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
           <DollarSign className="w-12 h-12 mx-auto mb-4 text-zinc-400" />
           <h3 className={`text-zinc-900 dark:text-zinc-100 mb-2 ${fontClass}`}>
-            {t.common?.noData || 'No services yet'}
+            {t.common?.noData || "No services yet"}
           </h3>
           <p className={`text-zinc-600 dark:text-zinc-400 ${fontClass}`}>
-            {t.pricing?.addFirstService || 'Contact administrator to add services'}
+            {t.pricing?.addFirstService ||
+              "Contact administrator to add services"}
           </p>
         </Card>
       ) : (
         <div className="grid gap-4">
           {services.map((service) => {
             const IconComponent = ICON_MAP[service.icon] || MapPin;
-            const savings = calculateSavings(service.pricePerThousand, service.googlePrice);
+            const savings = calculateSavings(
+              service.pricePerThousand,
+              service.googlePrice
+            );
 
             return (
               <Card
@@ -330,14 +356,16 @@ export function PricingManagement() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className={`text-zinc-900 dark:text-zinc-100 font-en`}>
+                        <h3
+                          className={`text-zinc-900 dark:text-zinc-100 font-en`}
+                        >
                           {service.name}
                         </h3>
                         <Badge
-                          variant={service.isActive ? 'default' : 'secondary'}
+                          variant={service.isActive ? "default" : "secondary"}
                           className="font-en"
                         >
-                          {service.isActive ? 'Active' : 'Inactive'}
+                          {service.isActive ? "Active" : "Inactive"}
                         </Badge>
                         <Badge variant="outline" className="font-en">
                           {service.category}
@@ -349,14 +377,16 @@ export function PricingManagement() {
                           </Badge>
                         )}
                       </div>
-                      <p className={`text-sm text-zinc-600 dark:text-zinc-400 mb-3 font-en`}>
+                      <p
+                        className={`text-sm text-zinc-600 dark:text-zinc-400 mb-3 font-en`}
+                      >
                         {service.description}
                       </p>
                       <div className="flex items-center gap-6 text-sm">
                         <div>
                           <span className="text-zinc-500 dark:text-zinc-500 font-en">
                             RokTenh Price:
-                          </span>{' '}
+                          </span>{" "}
                           <span className="text-zinc-900 dark:text-zinc-100 font-en">
                             ${service.pricePerThousand.toFixed(2)}/1K
                           </span>
@@ -364,7 +394,7 @@ export function PricingManagement() {
                         <div>
                           <span className="text-zinc-500 dark:text-zinc-500 font-en">
                             Google Price:
-                          </span>{' '}
+                          </span>{" "}
                           <span className="text-zinc-900 dark:text-zinc-100 font-en">
                             ${service.googlePrice.toFixed(2)}/1K
                           </span>
@@ -372,7 +402,7 @@ export function PricingManagement() {
                         <div>
                           <span className="text-zinc-500 dark:text-zinc-500 font-en">
                             Per Request:
-                          </span>{' '}
+                          </span>{" "}
                           <span className="text-zinc-900 dark:text-zinc-100 font-en">
                             ${service.pricePerRequest.toFixed(4)}
                           </span>
@@ -380,7 +410,7 @@ export function PricingManagement() {
                         <div>
                           <span className="text-zinc-500 dark:text-zinc-500 font-en">
                             Order:
-                          </span>{' '}
+                          </span>{" "}
                           <span className="text-zinc-900 dark:text-zinc-100 font-en">
                             #{service.order}
                           </span>
@@ -404,7 +434,10 @@ export function PricingManagement() {
                       variant="ghost"
                       size="sm"
                       onClick={() => handleMoveDown(service)}
-                      disabled={service.order === Math.max(...services.map(s => s.order))}
+                      disabled={
+                        service.order ===
+                        Math.max(...services.map((s) => s.order))
+                      }
                       className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 p-0 cursor-pointer"
                     >
                       <ArrowDown className="w-4 h-4" />
@@ -445,28 +478,39 @@ export function PricingManagement() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[600px] bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
           <DialogHeader>
-            <DialogTitle className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}>
+            <DialogTitle
+              className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}
+            >
               {editingService
-                ? t.common?.edit || 'Edit Service'
-                : t.common?.addNew || 'Add New Service'}
+                ? t.common?.edit || "Edit Service"
+                : t.common?.addNew || "Add New Service"}
             </DialogTitle>
-            <DialogDescription className={`text-zinc-600 dark:text-zinc-400 ${fontClass}`}>
+            <DialogDescription
+              className={`text-zinc-600 dark:text-zinc-400 ${fontClass}`}
+            >
               {editingService
-                ? t.pricing?.editServiceDesc || 'Update the pricing information for this service'
-                : t.pricing?.addServiceDesc || 'Add a new API service with pricing information'}
+                ? t.pricing?.editServiceDesc ||
+                  "Update the pricing information for this service"
+                : t.pricing?.addServiceDesc ||
+                  "Add a new API service with pricing information"}
             </DialogDescription>
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
             {/* Service Name */}
             <div className="grid gap-2">
-              <Label htmlFor="name" className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}>
-                {t.common?.name || 'Service Name'} *
+              <Label
+                htmlFor="name"
+                className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}
+              >
+                {t.common?.name || "Service Name"} *
               </Label>
               <Input
                 id="name"
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
                 placeholder="e.g., Geocoding API"
                 className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 font-en"
               />
@@ -474,13 +518,18 @@ export function PricingManagement() {
 
             {/* Description */}
             <div className="grid gap-2">
-              <Label htmlFor="description" className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}>
-                {t.common?.description || 'Description'}
+              <Label
+                htmlFor="description"
+                className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}
+              >
+                {t.common?.description || "Description"}
               </Label>
               <Textarea
                 id="description"
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
                 placeholder="Brief description of the service"
                 className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 font-en"
                 rows={3}
@@ -491,13 +540,18 @@ export function PricingManagement() {
               <>
                 {/* Service Key */}
                 <div className="grid gap-2">
-                  <Label htmlFor="serviceKey" className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}>
+                  <Label
+                    htmlFor="serviceKey"
+                    className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}
+                  >
                     Service Key
                   </Label>
                   <Input
                     id="serviceKey"
                     value={formData.serviceKey}
-                    onChange={(e) => setFormData({ ...formData, serviceKey: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, serviceKey: e.target.value })
+                    }
                     placeholder="e.g., geocoding (auto-generated if empty)"
                     className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 font-en"
                   />
@@ -506,19 +560,28 @@ export function PricingManagement() {
                 {/* Icon and Category */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="icon" className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}>
+                    <Label
+                      htmlFor="icon"
+                      className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}
+                    >
                       Icon
                     </Label>
                     <Select
                       value={formData.icon}
-                      onValueChange={(value) => setFormData({ ...formData, icon: value })}
+                      onValueChange={(value) =>
+                        setFormData({ ...formData, icon: value })
+                      }
                     >
                       <SelectTrigger className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 font-en">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         {AVAILABLE_ICONS.map((icon) => (
-                          <SelectItem key={icon.value} value={icon.value} className="font-en cursor-pointer">
+                          <SelectItem
+                            key={icon.value}
+                            value={icon.value}
+                            className="font-en cursor-pointer"
+                          >
                             {icon.label}
                           </SelectItem>
                         ))}
@@ -527,19 +590,28 @@ export function PricingManagement() {
                   </div>
 
                   <div className="grid gap-2">
-                    <Label htmlFor="category" className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}>
+                    <Label
+                      htmlFor="category"
+                      className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}
+                    >
                       Category
                     </Label>
                     <Select
                       value={formData.category}
-                      onValueChange={(value: any) => setFormData({ ...formData, category: value })}
+                      onValueChange={(value: any) =>
+                        setFormData({ ...formData, category: value })
+                      }
                     >
                       <SelectTrigger className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 font-en cursor-pointer">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         {CATEGORIES.map((cat) => (
-                          <SelectItem key={cat.value} value={cat.value} className="font-en cursor-pointer">
+                          <SelectItem
+                            key={cat.value}
+                            value={cat.value}
+                            className="font-en cursor-pointer"
+                          >
                             {cat.label}
                           </SelectItem>
                         ))}
@@ -550,17 +622,22 @@ export function PricingManagement() {
 
                 {/* Color */}
                 <div className="grid gap-2">
-                  <Label htmlFor="color" className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}>
+                  <Label
+                    htmlFor="color"
+                    className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}
+                  >
                     Color Theme
                   </Label>
                   <Select
                     value={formData.color}
                     onValueChange={(value) => {
-                      const colorOption = COLOR_OPTIONS.find(c => c.value === value);
+                      const colorOption = COLOR_OPTIONS.find(
+                        (c) => c.value === value
+                      );
                       setFormData({
                         ...formData,
                         color: value,
-                        bgColor: colorOption?.bg || 'bg-blue-500/10',
+                        bgColor: colorOption?.bg || "bg-blue-500/10",
                       });
                     }}
                   >
@@ -569,9 +646,15 @@ export function PricingManagement() {
                     </SelectTrigger>
                     <SelectContent>
                       {COLOR_OPTIONS.map((color) => (
-                        <SelectItem key={color.value} value={color.value} className="font-en cursor-pointer">
+                        <SelectItem
+                          key={color.value}
+                          value={color.value}
+                          className="font-en cursor-pointer"
+                        >
                           <div className="flex items-center gap-2">
-                            <div className={`w-4 h-4 rounded ${color.bg} border border-zinc-200 dark:border-zinc-700`} />
+                            <div
+                              className={`w-4 h-4 rounded ${color.bg} border border-zinc-200 dark:border-zinc-700`}
+                            />
                             {color.label}
                           </div>
                         </SelectItem>
@@ -585,7 +668,10 @@ export function PricingManagement() {
             {/* Pricing */}
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="pricePerThousand" className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}>
+                <Label
+                  htmlFor="pricePerThousand"
+                  className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}
+                >
                   RokTenh Price (per 1K) *
                 </Label>
                 <div className="relative">
@@ -598,7 +684,12 @@ export function PricingManagement() {
                     step="0.01"
                     min="0"
                     value={formData.pricePerThousand}
-                    onChange={(e) => setFormData({ ...formData, pricePerThousand: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        pricePerThousand: e.target.value,
+                      })
+                    }
                     placeholder="2.50"
                     className="pl-7 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 font-en"
                   />
@@ -606,7 +697,10 @@ export function PricingManagement() {
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="googlePrice" className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}>
+                <Label
+                  htmlFor="googlePrice"
+                  className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}
+                >
                   Google Price (per 1K) *
                 </Label>
                 <div className="relative">
@@ -619,7 +713,9 @@ export function PricingManagement() {
                     step="0.01"
                     min="0"
                     value={formData.googlePrice}
-                    onChange={(e) => setFormData({ ...formData, googlePrice: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, googlePrice: e.target.value })
+                    }
                     placeholder="5.00"
                     className="pl-7 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 font-en"
                   />
@@ -632,8 +728,12 @@ export function PricingManagement() {
               <Alert className="bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900/50">
                 <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
                 <AlertDescription className="text-green-700 dark:text-green-300 font-en">
-                  Savings: {calculateSavings(parseFloat(formData.pricePerThousand), parseFloat(formData.googlePrice))}% 
-                  compared to Google Maps Platform
+                  Savings:{" "}
+                  {calculateSavings(
+                    parseFloat(formData.pricePerThousand),
+                    parseFloat(formData.googlePrice)
+                  )}
+                  % compared to Google Maps Platform
                 </AlertDescription>
               </Alert>
             )}
@@ -646,14 +746,14 @@ export function PricingManagement() {
               className={`cursor-pointer ${fontClass}`}
             >
               <X className="w-4 h-4 mr-2" />
-              {t.common?.cancel || 'Cancel'}
+              {t.common?.cancel || "Cancel"}
             </Button>
             <Button
               onClick={handleSave}
               className={`bg-[#1B5BA5] hover:bg-[#164a8a] text-white cursor-pointer ${fontClass}`}
             >
               <Save className="w-4 h-4 mr-2" />
-              {t.common?.save || 'Save'}
+              {t.common?.save || "Save"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -663,11 +763,16 @@ export function PricingManagement() {
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent className="sm:max-w-[425px] bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
           <DialogHeader>
-            <DialogTitle className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}>
-              {t.common?.confirmDelete || 'Confirm Delete'}
+            <DialogTitle
+              className={`text-zinc-900 dark:text-zinc-100 ${fontClass}`}
+            >
+              {t.common?.confirmDelete || "Confirm Delete"}
             </DialogTitle>
-            <DialogDescription className={`text-zinc-600 dark:text-zinc-400 ${fontClass}`}>
-              {t.pricing?.deleteServiceWarning || 'Are you sure you want to delete this service? This action cannot be undone.'}
+            <DialogDescription
+              className={`text-zinc-600 dark:text-zinc-400 ${fontClass}`}
+            >
+              {t.pricing?.deleteServiceWarning ||
+                "Are you sure you want to delete this service? This action cannot be undone."}
             </DialogDescription>
           </DialogHeader>
           {serviceToDelete && (
@@ -686,7 +791,7 @@ export function PricingManagement() {
               }}
               className={`cursor-pointer ${fontClass}`}
             >
-              {t.common?.cancel || 'Cancel'}
+              {t.common?.cancel || "Cancel"}
             </Button>
             <Button
               onClick={handleDelete}
@@ -694,7 +799,7 @@ export function PricingManagement() {
               className={`cursor-pointer ${fontClass}`}
             >
               <Trash2 className="w-4 h-4 mr-2" />
-              {t.common?.delete || 'Delete'}
+              {t.common?.delete || "Delete"}
             </Button>
           </DialogFooter>
         </DialogContent>
