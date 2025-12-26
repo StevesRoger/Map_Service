@@ -1,11 +1,6 @@
 import { useState, useEffect } from "react";
 import { Label } from "./ui/label";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "./ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { toast } from "sonner";
 import { useLanguage } from "./LanguageContext";
 import type { User, APIKey } from "../types/api";
@@ -86,18 +81,12 @@ export function UserManagement({
   onAdjustBalance,
 }: UserManagementProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] =
-    useState<string>("all");
-  const [selectedUser, setSelectedUser] = useState<User | null>(
-    null,
-  );
-  const [isUserDialogOpen, setIsUserDialogOpen] =
-    useState(false);
-  const [isBalanceDialogOpen, setIsBalanceDialogOpen] =
-    useState(false);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isUserDialogOpen, setIsUserDialogOpen] = useState(false);
+  const [isBalanceDialogOpen, setIsBalanceDialogOpen] = useState(false);
   const [balanceAmount, setBalanceAmount] = useState("");
-  const [showMobileFilters, setShowMobileFilters] =
-    useState(false);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -136,15 +125,9 @@ export function UserManagement({
 
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
-      user.email
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      user.name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      user.company
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       false;
     const matchesStatus =
       statusFilter === "all" || user.status === statusFilter;
@@ -152,15 +135,10 @@ export function UserManagement({
   });
 
   // Pagination calculations
-  const totalPages = Math.ceil(
-    filteredUsers.length / itemsPerPage,
-  );
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedUsers = filteredUsers.slice(
-    startIndex,
-    endIndex,
-  );
+  const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
 
   const getUserKeys = (userId: string) => {
     return apiKeys.filter((key) => key.userId === userId);
@@ -190,7 +168,9 @@ export function UserManagement({
     const absAmount = Math.abs(amount);
     if (absAmount > selectedUser.totalBalance) {
       toast.error(
-        `Cannot adjust by $${absAmount.toFixed(2)}. Current balance is only $${selectedUser.totalBalance.toFixed(2)}`,
+        `Cannot adjust by $${absAmount.toFixed(
+          2
+        )}. Current balance is only $${selectedUser.totalBalance.toFixed(2)}`
       );
       return;
     }
@@ -200,7 +180,9 @@ export function UserManagement({
       const newBalance = selectedUser.totalBalance + amount;
       if (newBalance < 0) {
         toast.error(
-          `Cannot decrease balance by $${absAmount.toFixed(2)}. Current balance is only $${selectedUser.totalBalance.toFixed(2)}`,
+          `Cannot decrease balance by $${absAmount.toFixed(
+            2
+          )}. Current balance is only $${selectedUser.totalBalance.toFixed(2)}`
         );
         return;
       }
@@ -208,7 +190,7 @@ export function UserManagement({
 
     onAdjustBalance(selectedUser.id, amount);
     toast.success(
-      `Balance adjusted by ${amount > 0 ? "+" : ""}$${amount.toFixed(2)}`,
+      `Balance adjusted by ${amount > 0 ? "+" : ""}$${amount.toFixed(2)}`
     );
     setIsBalanceDialogOpen(false);
     setBalanceAmount("");
@@ -238,7 +220,7 @@ export function UserManagement({
           user.totalRequests,
           user.apiKeysCount,
           new Date(user.createdAt).toLocaleDateString(),
-        ].join(","),
+        ].join(",")
       ),
     ].join("\n");
 
@@ -253,17 +235,9 @@ export function UserManagement({
 
   // Calculate totals
   const totalUsers = users.length;
-  const activeUsers = users.filter(
-    (u) => u.status === "active",
-  ).length;
-  const totalBalance = users.reduce(
-    (sum, u) => sum + u.totalBalance,
-    0,
-  );
-  const totalRevenue = users.reduce(
-    (sum, u) => sum + u.totalSpent,
-    0,
-  );
+  const activeUsers = users.filter((u) => u.status === "active").length;
+  const totalBalance = users.reduce((sum, u) => sum + u.totalBalance, 0);
+  const totalRevenue = users.reduce((sum, u) => sum + u.totalSpent, 0);
 
   const { t, language } = useLanguage();
 
@@ -296,13 +270,9 @@ export function UserManagement({
                 <Search className="w-4 h-4 text-zinc-500" />
                 <Input
                   type="text"
-                  placeholder={
-                    language === "km" ? "ស្វែងរក" : "Search"
-                  }
+                  placeholder={language === "km" ? "ស្វែងរក" : "Search"}
                   value={searchTerm}
-                  onChange={(e) =>
-                    setSearchTerm(e.target.value)
-                  }
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   className="font-en bg-transparent border-0 p-0 h-auto text-sm text-zinc-400 placeholder:text-zinc-400 focus-visible:ring-0 focus-visible:ring-offset-0"
                 />
               </div>
@@ -313,23 +283,14 @@ export function UserManagement({
           <div className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 w-[140px] xl:w-[188px] px-[12px] py-[0px]">
             <div className="flex items-center gap-2">
               <Filter className="w-4 h-4 text-zinc-500" />
-              <Select
-                value={statusFilter}
-                onValueChange={setStatusFilter}
-              >
-                <SelectTrigger className="border-0 p-0 h-auto text-sm text-zinc-200 focus:ring-0 focus:ring-offset-0">
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="border-0 p-0 h-auto text-sm text-zinc-200 focus:ring-0 focus:ring-offset-0 cursor-pointer">
                   <SelectValue placeholder={t.users.all} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">
-                    {t.users.all}
-                  </SelectItem>
-                  <SelectItem value="active">
-                    {t.users.active}
-                  </SelectItem>
-                  <SelectItem value="suspended">
-                    {t.users.suspended}
-                  </SelectItem>
+                  <SelectItem value="all">{t.users.all}</SelectItem>
+                  <SelectItem value="active">{t.users.active}</SelectItem>
+                  <SelectItem value="suspended">{t.users.suspended}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -340,23 +301,19 @@ export function UserManagement({
             onClick={handleExportUsers}
             variant="ghost"
             title={t.users.exportUsers}
-            className="gap-2 px-3 py-2 text-zinc-200 hover:bg-transparent h-auto"
+            className="gap-2 px-3 py-2 text-zinc-200 hover:bg-transparent h-auto cursor-pointer"
           >
             <Download className="w-4 h-4" />
             <span className="xl:hidden">{t.users.export}</span>
-            <span className="hidden xl:inline">
-              {t.users.exportUsers}
-            </span>
+            <span className="hidden xl:inline">{t.users.exportUsers}</span>
           </Button>
         </div>
 
         {/* Mobile/Tablet Filter Toggle */}
         <Button
           variant="outline"
-          className={`lg:hidden w-auto border-zinc-800 px-[0px] py-[8px] ${fontClass}`}
-          onClick={() =>
-            setShowMobileFilters(!showMobileFilters)
-          }
+          className={`lg:hidden w-auto border-zinc-800 px-[0px] py-[8px] cursor-pointer ${fontClass}`}
+          onClick={() => setShowMobileFilters(!showMobileFilters)}
         >
           <Menu className="w-4 h-4 mr-2" />
           {t.users.filtersAndSearch}
@@ -375,9 +332,7 @@ export function UserManagement({
                   type="text"
                   placeholder="Search logs..."
                   value={searchTerm}
-                  onChange={(e) =>
-                    setSearchTerm(e.target.value)
-                  }
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   className="bg-transparent border-0 p-0 h-auto text-sm text-zinc-400 placeholder:text-zinc-400 focus-visible:ring-0 focus-visible:ring-offset-0"
                 />
               </div>
@@ -389,21 +344,14 @@ export function UserManagement({
             <div className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 px-[12px] py-[0px]">
               <div className="flex items-center gap-2">
                 <Filter className="w-4 h-4 text-zinc-500" />
-                <Select
-                  value={statusFilter}
-                  onValueChange={setStatusFilter}
-                >
-                  <SelectTrigger className="border-0 p-0 h-auto text-sm text-zinc-200 focus:ring-0 focus:ring-offset-0">
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="border-0 p-0 h-auto text-sm text-zinc-200 focus:ring-0 focus:ring-offset-0 cursor-pointer">
                     <SelectValue placeholder="All" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All</SelectItem>
-                    <SelectItem value="active">
-                      Active
-                    </SelectItem>
-                    <SelectItem value="suspended">
-                      Suspended
-                    </SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="suspended">Suspended</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -413,7 +361,7 @@ export function UserManagement({
             <Button
               onClick={handleExportUsers}
               variant="outline"
-              className="gap-2 border-zinc-700"
+              className="gap-2 border-zinc-700 cursor-pointer"
             >
               <Download className="w-4 h-4" />
               Export
@@ -537,7 +485,9 @@ export function UserManagement({
                           {user.name}
                         </h3>
                         <Badge
-                          className={`rounded-lg border px-[9px] py-[3px] text-xs font-medium flex-shrink-0 ${getStatusBadgeClasses(user.status)}`}
+                          className={`rounded-lg border px-[9px] py-[3px] text-xs font-medium flex-shrink-0 ${getStatusBadgeClasses(
+                            user.status
+                          )}`}
                         >
                           {getStatusText(user.status)}
                         </Badge>
@@ -568,7 +518,7 @@ export function UserManagement({
                           setSelectedUser(user);
                           setIsUserDialogOpen(true);
                         }}
-                        className={`gap-2 px-3 py-2 h-8 text-zinc-200 hover:bg-transparent text-xs sm:text-sm flex-1 sm:flex-none ${fontClass}`}
+                        className={`gap-2 px-3 py-2 h-8 text-zinc-200 hover:bg-transparent text-xs sm:text-sm flex-1 sm:flex-none cursor-pointer ${fontClass}`}
                       >
                         <Eye className="w-4 h-4" />
                         {t.users.viewDetails}
@@ -579,7 +529,7 @@ export function UserManagement({
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-8 w-8 p-0 text-zinc-200 hover:bg-zinc-800"
+                            className="h-8 w-8 p-0 text-zinc-200 hover:bg-zinc-800 cursor-pointer"
                           >
                             <MoreVertical className="w-4 h-4" />
                           </Button>
@@ -590,20 +540,16 @@ export function UserManagement({
                         >
                           {user.status === "suspended" ? (
                             <DropdownMenuItem
-                              onClick={() =>
-                                handleActivateUser(user.id)
-                              }
-                              className="text-green-400 focus:text-green-300 focus:bg-zinc-800"
+                              onClick={() => handleActivateUser(user.id)}
+                              className="text-green-400 focus:text-green-300 focus:bg-zinc-800 cursor-pointer"
                             >
                               <CheckCircle className="w-4 h-4 mr-2" />
                               {t.users.activateUser}
                             </DropdownMenuItem>
                           ) : (
                             <DropdownMenuItem
-                              onClick={() =>
-                                handleSuspendUser(user.id)
-                              }
-                              className="text-red-400 focus:text-red-300 focus:bg-zinc-800"
+                              onClick={() => handleSuspendUser(user.id)}
+                              className="text-red-400 focus:text-red-300 focus:bg-zinc-800 cursor-pointer"
                             >
                               <Ban className="w-4 h-4 mr-2" />
                               {t.users.suspendUser}
@@ -615,7 +561,7 @@ export function UserManagement({
                               setSelectedUser(user);
                               setIsBalanceDialogOpen(true);
                             }}
-                            className="text-zinc-300 focus:text-zinc-100 focus:bg-zinc-800"
+                            className="text-zinc-300 focus:text-zinc-100 focus:bg-zinc-800 cursor-pointer"
                           >
                             <DollarSign className="w-4 h-4 mr-2" />
                             {t.users.adjustBalance}
@@ -634,7 +580,9 @@ export function UserManagement({
                         {t.users.balance}
                       </p>
                       <p
-                        className={`text-sm sm:text-base tracking-[-0.3125px] font-en ${getBalanceColor(user.totalBalance)}`}
+                        className={`text-sm sm:text-base tracking-[-0.3125px] font-en ${getBalanceColor(
+                          user.totalBalance
+                        )}`}
                       >
                         {formatCurrency(user.totalBalance, {
                           locale: "en",
@@ -684,9 +632,7 @@ export function UserManagement({
                         {t.users.registered}
                       </p>
                       <p className="text-zinc-100 text-sm sm:text-base tracking-[-0.3125px]">
-                        {new Date(
-                          user.createdAt,
-                        ).toLocaleDateString("en-US", {
+                        {new Date(user.createdAt).toLocaleDateString("en-US", {
                           month: "numeric",
                           day: "numeric",
                           year: "numeric",
@@ -706,20 +652,21 @@ export function UserManagement({
         <div className="box-border flex items-center justify-between pb-[0px] pt-[10px] px-0 relative border-t border-zinc-800 pr-[0px] pl-[0px]">
           <p className="leading-[20px] relative shrink-0 text-[#9f9fa9] text-[14px] text-nowrap tracking-[-0.1504px]">
             {t.users.showingUsers} {startIndex + 1} {t.users.to}{" "}
-            {Math.min(endIndex, filteredUsers.length)}{" "}
-            {t.users.of} {filteredUsers.length}{" "}
-            {t.users.usersText}
+            {Math.min(endIndex, filteredUsers.length)} {t.users.of}{" "}
+            {filteredUsers.length} {t.users.usersText}
           </p>
           <Pagination className="mx-0 justify-end">
             <PaginationContent className="gap-[4px]">
               <PaginationItem>
                 <PaginationPrevious
                   onClick={() =>
-                    setCurrentPage((prev) =>
-                      Math.max(1, prev - 1),
-                    )
+                    setCurrentPage((prev) => Math.max(1, prev - 1))
                   }
-                  className={`text-zinc-200 hover:bg-zinc-800 hover:text-zinc-100 ${currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}`}
+                  className={`text-zinc-200 hover:bg-zinc-800 hover:text-zinc-100 ${
+                    currentPage === 1
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }`}
                 />
               </PaginationItem>
               {[...Array(totalPages)].map((_, i) => {
@@ -727,15 +674,18 @@ export function UserManagement({
                 if (
                   page === 1 ||
                   page === totalPages ||
-                  (page >= currentPage - 1 &&
-                    page <= currentPage + 1)
+                  (page >= currentPage - 1 && page <= currentPage + 1)
                 ) {
                   return (
                     <PaginationItem key={page}>
                       <PaginationLink
                         onClick={() => setCurrentPage(page)}
                         isActive={currentPage === page}
-                        className={`cursor-pointer ${currentPage === page ? "!bg-[#1B5BA5] text-white !border-0 hover:!bg-[#1B5BA5] hover:text-white" : "text-zinc-200 hover:bg-zinc-800 hover:text-zinc-100"}`}
+                        className={`cursor-pointer ${
+                          currentPage === page
+                            ? "!bg-[#1B5BA5] text-white !border-0 hover:!bg-[#1B5BA5] hover:text-white"
+                            : "text-zinc-200 hover:bg-zinc-800 hover:text-zinc-100"
+                        }`}
                       >
                         {page}
                       </PaginationLink>
@@ -756,11 +706,13 @@ export function UserManagement({
               <PaginationItem>
                 <PaginationNext
                   onClick={() =>
-                    setCurrentPage((prev) =>
-                      Math.min(totalPages, prev + 1),
-                    )
+                    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
                   }
-                  className={`text-zinc-200 hover:bg-zinc-800 hover:text-zinc-100 ${currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}`}
+                  className={`text-zinc-200 hover:bg-zinc-800 hover:text-zinc-100 ${
+                    currentPage === totalPages
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }`}
                 />
               </PaginationItem>
             </PaginationContent>
@@ -769,10 +721,7 @@ export function UserManagement({
       )}
 
       {/* Balance Adjustment Dialog - Single instance outside the map */}
-      <Dialog
-        open={isBalanceDialogOpen}
-        onOpenChange={setIsBalanceDialogOpen}
-      >
+      <Dialog open={isBalanceDialogOpen} onOpenChange={setIsBalanceDialogOpen}>
         <DialogContent className="bg-zinc-900 border-zinc-800 max-w-[95vw] sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-zinc-100 text-base sm:text-lg">
@@ -791,16 +740,13 @@ export function UserManagement({
                 type="number"
                 placeholder="50.00"
                 value={balanceAmount}
-                onChange={(e) =>
-                  setBalanceAmount(e.target.value)
-                }
+                onChange={(e) => setBalanceAmount(e.target.value)}
                 className="bg-zinc-800 border-zinc-700 text-zinc-100 mt-1.5"
               />
             </div>
             {selectedUser && (
               <p className="text-xs sm:text-sm text-zinc-500">
-                {t.users.currentBalance} $
-                {selectedUser.totalBalance.toFixed(2)}
+                {t.users.currentBalance} ${selectedUser.totalBalance.toFixed(2)}
               </p>
             )}
           </div>
@@ -808,14 +754,14 @@ export function UserManagement({
             <Button
               variant="outline"
               onClick={() => setIsBalanceDialogOpen(false)}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto cursor-pointer"
               size="sm"
             >
               {t.common.cancel}
             </Button>
             <Button
               onClick={handleAdjustBalance}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto cursor-pointer"
               size="sm"
             >
               {t.users.apply}
@@ -826,10 +772,7 @@ export function UserManagement({
 
       {/* User Details Dialog - Single instance outside the map */}
       {selectedUser && (
-        <Dialog
-          open={isUserDialogOpen}
-          onOpenChange={setIsUserDialogOpen}
-        >
+        <Dialog open={isUserDialogOpen} onOpenChange={setIsUserDialogOpen}>
           <DialogContent className="max-w-[95vw] sm:max-w-3xl max-h-[90vh] overflow-y-auto bg-zinc-900 border-zinc-800">
             <DialogHeader>
               <DialogTitle className="text-zinc-100 text-base sm:text-lg">
@@ -844,22 +787,19 @@ export function UserManagement({
               <TabsList className="grid w-full grid-cols-2 bg-zinc-800">
                 <TabsTrigger
                   value="overview"
-                  className="text-xs sm:text-sm"
+                  className="text-xs sm:text-sm cursor-pointer"
                 >
                   {t.users.overview}
                 </TabsTrigger>
                 <TabsTrigger
                   value="api-keys"
-                  className="text-xs sm:text-sm"
+                  className="text-xs sm:text-sm cursor-pointer"
                 >
                   {t.users.apiKeysTab}
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent
-                value="overview"
-                className="space-y-4"
-              >
+              <TabsContent value="overview" className="space-y-4">
                 <div className="grid grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-1 sm:space-y-2">
                     <Label className="text-zinc-400 text-xs sm:text-sm">
@@ -874,9 +814,7 @@ export function UserManagement({
                       {t.users.status}
                     </Label>
                     <Badge
-                      className={getStatusBadgeClasses(
-                        selectedUser.status,
-                      )}
+                      className={getStatusBadgeClasses(selectedUser.status)}
                     >
                       {getStatusText(selectedUser.status)}
                     </Badge>
@@ -886,8 +824,7 @@ export function UserManagement({
                       {t.users.phone}
                     </Label>
                     <p className="text-zinc-100 text-sm sm:text-base">
-                      {selectedUser.phoneNumber ||
-                        t.users.notAvailable}
+                      {selectedUser.phoneNumber || t.users.notAvailable}
                     </p>
                   </div>
                   <div className="space-y-1 sm:space-y-2">
@@ -895,9 +832,7 @@ export function UserManagement({
                       {t.users.memberSince}
                     </Label>
                     <p className="text-zinc-100 text-sm sm:text-base">
-                      {new Date(
-                        selectedUser.createdAt,
-                      ).toLocaleDateString()}
+                      {new Date(selectedUser.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
@@ -908,12 +843,14 @@ export function UserManagement({
                       {t.users.totalBalance}
                     </Label>
                     <p
-                      className={`text-base sm:text-lg font-en ${getBalanceColor(selectedUser.totalBalance)}`}
+                      className={`text-base sm:text-lg font-en ${getBalanceColor(
+                        selectedUser.totalBalance
+                      )}`}
                     >
-                      {formatCurrency(
-                        selectedUser.totalBalance,
-                        { locale: "en", decimals: 2 },
-                      )}
+                      {formatCurrency(selectedUser.totalBalance, {
+                        locale: "en",
+                        decimals: 2,
+                      })}
                     </p>
                   </div>
                   <div className="space-y-1 sm:space-y-2">
@@ -932,10 +869,9 @@ export function UserManagement({
                       {t.users.totalRequests}
                     </Label>
                     <p className="text-base sm:text-lg text-zinc-100 font-en">
-                      {formatNumber(
-                        selectedUser.totalRequests,
-                        { locale: "en" },
-                      )}
+                      {formatNumber(selectedUser.totalRequests, {
+                        locale: "en",
+                      })}
                     </p>
                   </div>
                   <div className="space-y-1 sm:space-y-2">
@@ -949,10 +885,7 @@ export function UserManagement({
                 </div>
               </TabsContent>
 
-              <TabsContent
-                value="api-keys"
-                className="space-y-3 sm:space-y-4"
-              >
+              <TabsContent value="api-keys" className="space-y-3 sm:space-y-4">
                 {getUserKeys(selectedUser.id).length === 0 ? (
                   <p className="text-center text-zinc-400 py-6 sm:py-8 text-sm sm:text-base">
                     {t.users.noApiKeys}
@@ -969,7 +902,9 @@ export function UserManagement({
                             {key.name}
                           </h4>
                           <Badge
-                            className={`flex-shrink-0 ${getStatusBadgeClasses(key.status as any)}`}
+                            className={`flex-shrink-0 ${getStatusBadgeClasses(
+                              key.status as any
+                            )}`}
                           >
                             {getStatusText(key.status as any)}
                           </Badge>
@@ -979,9 +914,7 @@ export function UserManagement({
                         </code>
                         <div className="grid grid-cols-2 gap-2 sm:gap-3 text-xs sm:text-sm">
                           <div>
-                            <p className="text-zinc-400">
-                              {t.users.requests}
-                            </p>
+                            <p className="text-zinc-400">{t.users.requests}</p>
                             <p className="text-zinc-100">
                               {formatNumber(key.requestCount, {
                                 locale: "en",
@@ -989,9 +922,7 @@ export function UserManagement({
                             </p>
                           </div>
                           <div>
-                            <p className="text-zinc-400">
-                              {t.users.status}
-                            </p>
+                            <p className="text-zinc-400">{t.users.status}</p>
                             <p className="text-zinc-100">
                               {getStatusText(key.status as any)}
                             </p>
