@@ -316,16 +316,16 @@ export function AdminDashboard({ stats, userBalance }: AdminDashboardProps) {
           <p className={`text-sm text-zinc-600 dark:text-zinc-400 ${fontClass}`}>{t.dashboard.monitorUsageAndPerformance}</p>
         </div>
         <Select value={dateFilter} onValueChange={setDateFilter}>
-          <SelectTrigger className="w-full sm:w-[180px] bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
+          <SelectTrigger className="w-full sm:w-[180px] bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 cursor-pointer">
             <Calendar className="w-4 h-4 mr-2 text-zinc-600 dark:text-zinc-400" />
             <SelectValue />
           </SelectTrigger>
           <SelectContent className="bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
-            <SelectItem value="today" className="text-zinc-900 dark:text-zinc-100 focus:bg-zinc-100 dark:focus:bg-zinc-800">{t.dashboard.today}</SelectItem>
-            <SelectItem value="7days" className="text-zinc-900 dark:text-zinc-100 focus:bg-zinc-100 dark:focus:bg-zinc-800">{t.dashboard.last7Days}</SelectItem>
-            <SelectItem value="30days" className="text-zinc-900 dark:text-zinc-100 focus:bg-zinc-100 dark:focus:bg-zinc-800">{t.dashboard.last30Days}</SelectItem>
-            <SelectItem value="thisMonth" className="text-zinc-900 dark:text-zinc-100 focus:bg-zinc-100 dark:focus:bg-zinc-800">{t.dashboard.thisMonth}</SelectItem>
-            <SelectItem value="allTime" className="text-zinc-900 dark:text-zinc-100 focus:bg-zinc-100 dark:focus:bg-zinc-800">{t.dashboard.allTime}</SelectItem>
+            <SelectItem value="today" className="text-zinc-900 dark:text-zinc-100 focus:bg-zinc-100 dark:focus:bg-zinc-800 cursor-pointer">{t.dashboard.today}</SelectItem>
+            <SelectItem value="7days" className="text-zinc-900 dark:text-zinc-100 focus:bg-zinc-100 dark:focus:bg-zinc-800 cursor-pointer">{t.dashboard.last7Days}</SelectItem>
+            <SelectItem value="30days" className="text-zinc-900 dark:text-zinc-100 focus:bg-zinc-100 dark:focus:bg-zinc-800 cursor-pointer">{t.dashboard.last30Days}</SelectItem>
+            <SelectItem value="thisMonth" className="text-zinc-900 dark:text-zinc-100 focus:bg-zinc-100 dark:focus:bg-zinc-800 cursor-pointer">{t.dashboard.thisMonth}</SelectItem>
+            <SelectItem value="allTime" className="text-zinc-900 dark:text-zinc-100 focus:bg-zinc-100 dark:focus:bg-zinc-800 cursor-pointer">{t.dashboard.allTime}</SelectItem>
           </SelectContent>
         </Select>
       </motion.div>
