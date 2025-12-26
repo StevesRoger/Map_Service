@@ -141,7 +141,7 @@ export function TopUpAmountStep({
             <button
               key={amount}
               onClick={() => setTopUpAmount((prev) => (parseFloat(prev || '0') + amount).toString())}
-              className="flex-1 h-8 px-3 bg-[rgba(255,255,255,0.25)] hover:bg-[rgba(255,255,255,0.35)] rounded-lg text-zinc-200 text-sm text-center transition-colors font-en"
+              className="flex-1 h-8 px-3 bg-[rgba(255,255,255,0.25)] hover:bg-[rgba(255,255,255,0.35)] rounded-lg text-zinc-200 text-sm text-center transition-colors font-en cursor-pointer"
             >
               ${amount}
             </button>
@@ -185,14 +185,14 @@ export function TopUpAmountStep({
         <Button
           variant="outline"
           onClick={onCancel}
-          className={`flex-1 border-zinc-700 hover:bg-zinc-800 ${fontClass}`}
+          className={`flex-1 border-zinc-700 hover:bg-zinc-800 ${fontClass} cursor-pointer`}
         >
           {t.topUp.cancel}
         </Button>
         <Button
           onClick={onConfirm}
           disabled={!topUpAmount || parseFloat(topUpAmount) < 5 || parseFloat(topUpAmount) > 10000}
-          className={`flex-1 bg-[#1b5ba5] hover:bg-[#1b5ba5]/90 text-white ${fontClass}`}
+          className={`flex-1 bg-[#1b5ba5] hover:bg-[#1b5ba5]/90 text-white ${fontClass} cursor-pointer`}
         >
           {t.topUp.confirmTopUp}
         </Button>
