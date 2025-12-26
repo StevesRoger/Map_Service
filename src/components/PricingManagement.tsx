@@ -396,7 +396,7 @@ export function PricingManagement() {
                       size="sm"
                       onClick={() => handleMoveUp(service)}
                       disabled={service.order === 1}
-                      className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 p-0"
+                      className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 p-0 cursor-pointer"
                     >
                       <ArrowUp className="w-4 h-4" />
                     </Button>
@@ -405,19 +405,20 @@ export function PricingManagement() {
                       size="sm"
                       onClick={() => handleMoveDown(service)}
                       disabled={service.order === Math.max(...services.map(s => s.order))}
-                      className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 p-0"
+                      className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 p-0 cursor-pointer"
                     >
                       <ArrowDown className="w-4 h-4" />
                     </Button>
                     <Switch
                       checked={service.isActive}
                       onCheckedChange={() => handleToggleStatus(service)}
+                      className="cursor-pointer"
                     />
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => handleOpenDialog(service)}
-                      className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 p-0"
+                      className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 p-0 cursor-pointer"
                     >
                       <Edit2 className="w-4 h-4" />
                     </Button>
@@ -428,7 +429,7 @@ export function PricingManagement() {
                         setServiceToDelete(service);
                         setIsDeleteDialogOpen(true);
                       }}
-                      className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 p-0"
+                      className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 p-0 cursor-pointer"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
@@ -517,7 +518,7 @@ export function PricingManagement() {
                       </SelectTrigger>
                       <SelectContent>
                         {AVAILABLE_ICONS.map((icon) => (
-                          <SelectItem key={icon.value} value={icon.value} className="font-en">
+                          <SelectItem key={icon.value} value={icon.value} className="font-en cursor-pointer">
                             {icon.label}
                           </SelectItem>
                         ))}
@@ -533,12 +534,12 @@ export function PricingManagement() {
                       value={formData.category}
                       onValueChange={(value: any) => setFormData({ ...formData, category: value })}
                     >
-                      <SelectTrigger className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 font-en">
+                      <SelectTrigger className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 font-en cursor-pointer">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         {CATEGORIES.map((cat) => (
-                          <SelectItem key={cat.value} value={cat.value} className="font-en">
+                          <SelectItem key={cat.value} value={cat.value} className="font-en cursor-pointer">
                             {cat.label}
                           </SelectItem>
                         ))}
@@ -563,12 +564,12 @@ export function PricingManagement() {
                       });
                     }}
                   >
-                    <SelectTrigger className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 font-en">
+                    <SelectTrigger className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 font-en cursor-pointer">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       {COLOR_OPTIONS.map((color) => (
-                        <SelectItem key={color.value} value={color.value} className="font-en">
+                        <SelectItem key={color.value} value={color.value} className="font-en cursor-pointer">
                           <div className="flex items-center gap-2">
                             <div className={`w-4 h-4 rounded ${color.bg} border border-zinc-200 dark:border-zinc-700`} />
                             {color.label}
@@ -642,14 +643,14 @@ export function PricingManagement() {
             <Button
               variant="outline"
               onClick={handleCloseDialog}
-              className={fontClass}
+              className={`cursor-pointer ${fontClass}`}
             >
               <X className="w-4 h-4 mr-2" />
               {t.common?.cancel || 'Cancel'}
             </Button>
             <Button
               onClick={handleSave}
-              className={`bg-[#1B5BA5] hover:bg-[#164a8a] text-white ${fontClass}`}
+              className={`bg-[#1B5BA5] hover:bg-[#164a8a] text-white cursor-pointer ${fontClass}`}
             >
               <Save className="w-4 h-4 mr-2" />
               {t.common?.save || 'Save'}
@@ -683,14 +684,14 @@ export function PricingManagement() {
                 setIsDeleteDialogOpen(false);
                 setServiceToDelete(null);
               }}
-              className={fontClass}
+              className={`cursor-pointer ${fontClass}`}
             >
               {t.common?.cancel || 'Cancel'}
             </Button>
             <Button
               onClick={handleDelete}
               variant="destructive"
-              className={fontClass}
+              className={`cursor-pointer ${fontClass}`}
             >
               <Trash2 className="w-4 h-4 mr-2" />
               {t.common?.delete || 'Delete'}

@@ -268,14 +268,14 @@ export function PricingPlans({ onNavigateToWallet }: PricingPlansProps) {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Button 
               variant="outline" 
-              className="w-full sm:w-auto border-zinc-700 hover:bg-zinc-800 font-en"
+              className="w-full sm:w-auto border-zinc-700 hover:bg-zinc-800 font-en cursor-pointer"
               onClick={() => window.location.href = 'tel:+85561498889'}
             >
               <Phone className="w-4 h-4 mr-2" />
               +855 614 98889
             </Button>
             <Button 
-              className={`w-full sm:w-auto bg-[#0088cc] hover:bg-[#0077b3] ${fontClass}`}
+              className={`w-full sm:w-auto bg-[#0088cc] hover:bg-[#0077b3] cursor-pointer ${fontClass}`}
               onClick={() => window.open('https://t.me/RokTenh_Sales', '_blank')}
             >
               <Send className="w-4 h-4 mr-2" />
