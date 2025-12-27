@@ -1,0 +1,73 @@
+name: deployment
+on:
+  push:
+    branches: [ "dev" ]
+jobs:
+  deploy-app:
+    name: build and deploy
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: dev
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to docker registry
+        uses: docker/login-action@v3
+        with:
+          username: ${{secrets.DOCKERHUB_USERNAME}}
+          password: ${{secrets.DOCKERHUB_TOKEN}}
+
+      - name: Build and push docker image to registry
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: chhengkim/roktenh:map-ui-dev
+      
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/roktenh_dev_ssh.key
+          chmod 600 ~/.ssh/roktenh_dev_ssh.key
+          cat >>~/.ssh/config <<END
+          Host dev
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/roktenh_dev_ssh.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_USER: ${{ secrets.DEV_SSH_USER }}
+          SSH_KEY: ${{ secrets.DEV_SSH_KEY }}
+          SSH_HOST: ${{ secrets.DEV_SSH_HOST }}
+
+      - name: Generate resolved env file and upload
+        run: |
+          # Export all GitHub vars into the current shell
+          eval $(echo '${{ toJson(vars) }}' | jq -r 'to_entries[] | "export \(.key)=\(.value)"')
+
+          # Substitute variables into the template
+          envsubst < .env.template > resolved_env
+
+          # Upload to remote server
+          ssh dev 'cat > /home/chheng/roktenh/frontend/env' < resolved_env
+
+      - name: Deploy
+        run: ssh dev 'cd /home/chheng/roktenh/frontend && docker compose pull frontend && docker compose up -d frontend'
+
+      - name: Restart nginx
+        run: ssh dev 'cd /home/chheng/roktenh && docker compose restart nginx'
+
+      - name: Post write env
+        if: always()
+        run: ssh dev 'ls -la /home/chheng/roktenh/frontend/env'
+
+      - name: Post deploy
+        if: always() # Ensure this step runs even if the previous step fails
+        run: ssh dev 'docker ps -a'
+
+      - name: Post configure SSH
+        if: always() # Ensure this step runs even if the previous step fails
+        run: rm -f ~/.ssh/roktenh_dev_ssh.key && echo "ssh key removed"
