@@ -57,8 +57,9 @@ jobs:
       - name: Deploy
         run: ssh dev 'cd /home/chheng/roktenh/frontend && docker compose pull frontend && docker compose up -d frontend'
 
-      - name: Restart nginx
-        run: ssh dev 'cd /home/chheng/roktenh && docker compose restart nginx'
+      - name: Reload nginx
+        if: always()
+        run: ssh dev 'docker exec nginx nginx -s reload'
 
       - name: Post write env
         if: always()
