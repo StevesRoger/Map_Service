@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useAuth } from "./AuthContext";
 import { useLanguage } from "./LanguageContext";
+import { authAPI } from "../services/authService";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -72,7 +73,7 @@ export function SignUp({ onSwitchToLogin, onBackToLanding }: SignUpProps) {
   // OTP states
   const [showOtpStep, setShowOtpStep] = useState(false);
   const [otpCode, setOtpCode] = useState("");
-  const [generatedOtp, setGeneratedOtp] = useState("");
+  const [otpRefer, setOtpRefer] = useState(""); // Store otp_refer from server
   const [otpLoading, setOtpLoading] = useState(false);
   const [isOtpInvalid, setIsOtpInvalid] = useState(false);
 
@@ -278,21 +279,20 @@ export function SignUp({ onSwitchToLogin, onBackToLanding }: SignUpProps) {
     try {
       setIsLoading(true);
 
-      // Use default OTP for testing
-      const otp = "123456";
-      setGeneratedOtp(otp);
+      // Step 1: Pre-validate email
+      await authAPI.preValidate(formData.email);
 
-      // Simulate sending OTP (in real app, this would call API)
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      // Step 2: Send OTP to email
+      await authAPI.sendOTP(formData.email);
 
-      console.log("🔐 Test OTP Code: 123456"); // Default for testing
-      toast.success(t.auth.otpResent);
+      toast.success(t.auth.otpSentTo || "OTP sent to your email!");
 
       // Show OTP screen
       setShowOtpStep(true);
-    } catch (err) {
-      setError(t.auth.signupFailed);
-      toast.error("Failed to send OTP");
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || t.auth.signupFailed;
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setIsLoading(false);
     }
@@ -307,26 +307,77 @@ export function SignUp({ onSwitchToLogin, onBackToLanding }: SignUpProps) {
       return;
     }
 
-    if (otpCode !== generatedOtp) {
-      setError(t.auth.invalidOtp);
-      setIsOtpInvalid(true);
-      return;
-    }
-
     try {
       setOtpLoading(true);
-      // Create account after OTP verification
-      await signup({
-        email: formData.email,
-        password: formData.password,
-        name: formData.name,
-        company: formData.company || undefined,
+
+      // Step 3: Verify OTP
+      const verifyResponse = await authAPI.verifyOTP(otpCode);
+
+      console.log("OTP Verification Response:", verifyResponse); // Debug log
+
+      // Check if verification was successful
+      // The 'data' field contains the otp_refer directly as a string
+      if (verifyResponse.data) {
+        // Store otp_refer for signup (data is the otp_refer string)
+        const otpReference =
+          typeof verifyResponse.data === "string"
+            ? verifyResponse.data
+            : verifyResponse.data.otp_refer;
+
+        console.log("OTP Reference:", otpReference);
+        setOtpRefer(otpReference);
+
+        // Step 4: Create account with verified OTP
+        console.log("Creating account with data:", {
+          email: formData.email,
+          name: formData.name,
+          otp_refer: otpReference,
+          agree_term: acceptedTerms,
+        });
+
+        await signup({
+          email: formData.email,
+          password: formData.password,
+          name: formData.name,
+          company: formData.company || undefined,
+          otp_refer: otpReference,
+          agree_term: acceptedTerms,
+        });
+
+        console.log("Signup completed successfully!");
+        toast.success(t.auth.accountCreatedSuccess);
+      } else {
+        // If we got here with 200 status but no data, something's wrong
+        console.error("Unexpected response structure:", verifyResponse);
+        setError(t.auth.invalidOtp);
+        setIsOtpInvalid(true);
+      }
+    } catch (err: any) {
+      console.error("OTP Verification/Signup Error:", err);
+      console.error("Error details:", {
+        message: err.message,
+        response: err.response,
+        data: err.response?.data,
       });
-      toast.success(t.auth.accountCreatedSuccess);
-    } catch (err) {
-      setError(t.auth.signupFailed);
-      toast.error("Signup failed");
-      setShowOtpStep(false); // Go back to form
+
+      // Check if it's the "account created but login failed" case
+      if (err.message && err.message.includes("Please login manually")) {
+        // Account was created successfully, just need to login
+        setError("");
+        toast.success("Account created successfully! Redirecting to login...");
+
+        // Wait a moment then redirect to login
+        setTimeout(() => {
+          onSwitchToLogin();
+        }, 2000);
+        return;
+      }
+
+      const errorMsg =
+        err.response?.data?.message || err.message || t.auth.signupFailed;
+      setError(errorMsg);
+      setIsOtpInvalid(true);
+      toast.error(errorMsg);
     } finally {
       setOtpLoading(false);
     }
@@ -335,26 +386,23 @@ export function SignUp({ onSwitchToLogin, onBackToLanding }: SignUpProps) {
   const handleResendOtp = async () => {
     try {
       setError("");
-      // Use default OTP for testing
-      const otp = "123456";
-      setGeneratedOtp(otp);
       setOtpCode("");
       setIsOtpInvalid(false);
 
-      // Simulate sending OTP
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      // Resend OTP via API
+      await authAPI.sendOTP(formData.email);
 
-      console.log("🔐 Test OTP Code: 123456"); // Default for testing
-      toast.success(t.auth.otpResent);
-    } catch (err) {
-      toast.error("Failed to resend OTP");
+      toast.success(t.auth.otpResent || "OTP resent!");
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || "Failed to resend OTP";
+      toast.error(errorMsg);
     }
   };
 
   const handleChangeEmail = () => {
     setShowOtpStep(false);
     setOtpCode("");
-    setGeneratedOtp("");
+    setOtpRefer("");
     setError("");
     setIsOtpInvalid(false);
   };
@@ -1140,19 +1188,12 @@ export function SignUp({ onSwitchToLogin, onBackToLanding }: SignUpProps) {
 
                               // Auto-verify when all 6 digits are filled
                               if (completeOtp.length === 6 && value) {
-                                if (completeOtp === generatedOtp) {
-                                  // Correct code - auto verify
-                                  setTimeout(() => {
-                                    handleOtpVerification(
-                                      new Event("submit") as any
-                                    );
-                                  }, 200);
-                                } else {
-                                  // Wrong code - show red border
-                                  setTimeout(() => {
-                                    setIsOtpInvalid(true);
-                                  }, 100);
-                                }
+                                // Auto-submit when all 6 digits are entered
+                                setTimeout(() => {
+                                  handleOtpVerification(
+                                    new Event("submit") as any
+                                  );
+                                }, 200);
                               }
                             }
                           }}
