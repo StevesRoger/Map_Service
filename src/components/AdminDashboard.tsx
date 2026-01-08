@@ -33,6 +33,11 @@ import {
 } from "recharts";
 import type { UsageStats } from "../types/api";
 import { useLanguage } from "./LanguageContext";
+import {
+  dashboardService,
+  type DashboardStatistic,
+} from "../services/dashboardService";
+import { toast } from "sonner";
 
 interface AdminDashboardProps {
   stats: UsageStats | null;
@@ -48,6 +53,10 @@ export function AdminDashboard({ stats, userBalance }: AdminDashboardProps) {
   const [mounted, setMounted] = useState(false);
   const [animatedSuccessRate, setAnimatedSuccessRate] = useState(0);
   const [dateFilter, setDateFilter] = useState("30days");
+  const [dashboardData, setDashboardData] = useState<DashboardStatistic | null>(
+    null
+  );
+  const [isLoadingDashboard, setIsLoadingDashboard] = useState(true);
 
   // Animated counters for stat cards
   const [animatedSpentToday, setAnimatedSpentToday] = useState(0);
@@ -57,120 +66,122 @@ export function AdminDashboard({ stats, userBalance }: AdminDashboardProps) {
 
   useEffect(() => {
     setMounted(true);
+
+    // Fetch dashboard statistics from backend
+    const fetchDashboardData = async () => {
+      try {
+        setIsLoadingDashboard(true);
+        const data = await dashboardService.getStatistics();
+        setDashboardData(data);
+        console.log("Dashboard data fetched:", data);
+      } catch (error: any) {
+        console.error("Failed to fetch dashboard data:", error);
+        toast.error("Failed to load dashboard statistics");
+      } finally {
+        setIsLoadingDashboard(false);
+      }
+    };
+
+    fetchDashboardData();
   }, []);
 
-  // Calculate user-specific stats with null checks
-  const spentToday = stats?.revenueToday ?? 0;
-  const yourBalance = userBalance; // Use centralized wallet balance
-  const totalSpent = stats?.totalRevenue ?? 0;
-  const activeKeys = stats?.activeKeys ?? 0;
+  // Calculate user-specific stats with real backend data
+  const spentToday = dashboardData?.spent_today ?? 0;
+  const yourBalance = dashboardData?.balance ?? userBalance; // Use backend balance or fallback to prop
+  const totalSpent = dashboardData?.total_spent ?? 0;
+  const activeKeys = dashboardData?.active_key ?? 0;
+  const successCount = dashboardData?.success ?? 0;
+  const errorCount = dashboardData?.error ?? 0;
 
   // Filtered stats based on date filter
   const filteredStats = useMemo(() => {
-    const generateRandomValue = (min: number, max: number) =>
-      Math.floor(Math.random() * (max - min + 1)) + min;
+    if (!dashboardData) {
+      return {
+        totalRequests: 0,
+        successRequests: 0,
+        errorRequests: 0,
+        successRate: 0,
+        spent: 0,
+        totalSpent: 0,
+      };
+    }
+
+    // Calculate total requests from the requests array based on date filter
+    const now = new Date();
+    let filteredRequests = dashboardData.requests;
 
     switch (dateFilter) {
       case "today": {
-        const totalReqs = generateRandomValue(2000, 5000);
-        const errorRate = Math.random() * 5; // 0-5% error rate
-        const spentAmount = Math.random() * 50 + 10; // $10-$60
-        return {
-          totalRequests: totalReqs,
-          successRequests:
-            totalReqs - Math.round((totalReqs * errorRate) / 100),
-          errorRequests: Math.round((totalReqs * errorRate) / 100),
-          successRate: 100 - errorRate,
-          spent: spentAmount,
-          totalSpent: spentAmount,
-        };
+        // Filter requests for today only
+        const today = now.toISOString().split("T")[0];
+        filteredRequests = dashboardData.requests.filter(
+          (req) => req.date === today
+        );
+        break;
       }
 
       case "7days": {
-        const totalReqs = generateRandomValue(10000, 18000);
-        const errorRate = Math.random() * 4;
-        const spentAmount = Math.random() * 200 + 100; // $100-$300
-        return {
-          totalRequests: totalReqs,
-          successRequests:
-            totalReqs - Math.round((totalReqs * errorRate) / 100),
-          errorRequests: Math.round((totalReqs * errorRate) / 100),
-          successRate: 100 - errorRate,
-          spent: spentAmount,
-          totalSpent: spentAmount,
-        };
+        // Filter requests for last 7 days
+        const sevenDaysAgo = new Date(now);
+        sevenDaysAgo.setDate(now.getDate() - 7);
+        filteredRequests = dashboardData.requests.filter((req) => {
+          const reqDate = new Date(req.date);
+          return reqDate >= sevenDaysAgo;
+        });
+        break;
       }
 
       case "30days": {
-        const totalReqs = generateRandomValue(40000, 80000);
-        const errorRate = Math.random() * 3;
-        const spentAmount = Math.random() * 500 + 300; // $300-$800
-        return {
-          totalRequests: totalReqs,
-          successRequests:
-            totalReqs - Math.round((totalReqs * errorRate) / 100),
-          errorRequests: Math.round((totalReqs * errorRate) / 100),
-          successRate: 100 - errorRate,
-          spent: spentAmount,
-          totalSpent: spentAmount,
-        };
+        // Filter requests for last 30 days
+        const thirtyDaysAgo = new Date(now);
+        thirtyDaysAgo.setDate(now.getDate() - 30);
+        filteredRequests = dashboardData.requests.filter((req) => {
+          const reqDate = new Date(req.date);
+          return reqDate >= thirtyDaysAgo;
+        });
+        break;
       }
 
       case "thisMonth": {
-        const currentDay = new Date().getDate();
-        const totalReqs = generateRandomValue(
-          currentDay * 1000,
-          currentDay * 2500
-        );
-        const errorRate = Math.random() * 3.5;
-        const spentAmount = Math.random() * (currentDay * 20) + currentDay * 10;
-        return {
-          totalRequests: totalReqs,
-          successRequests:
-            totalReqs - Math.round((totalReqs * errorRate) / 100),
-          errorRequests: Math.round((totalReqs * errorRate) / 100),
-          successRate: 100 - errorRate,
-          spent: spentAmount,
-          totalSpent: spentAmount,
-        };
+        // Filter requests for current month
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+        filteredRequests = dashboardData.requests.filter((req) => {
+          const reqDate = new Date(req.date);
+          return (
+            reqDate.getMonth() === currentMonth &&
+            reqDate.getFullYear() === currentYear
+          );
+        });
+        break;
       }
 
       case "allTime": {
-        const totalReqs = stats?.totalRequests ?? 0;
-        const errorRate = stats?.errorRate ?? 0;
-        return {
-          totalRequests: totalReqs,
-          successRequests:
-            totalReqs - Math.round((totalReqs * errorRate) / 100),
-          errorRequests: Math.round((totalReqs * errorRate) / 100),
-          successRate: 100 - errorRate,
-          spent: totalSpent,
-          totalSpent: totalSpent,
-        };
+        // Use all requests
+        filteredRequests = dashboardData.requests;
+        break;
       }
-
-      default:
-        return {
-          totalRequests: stats?.totalRequests ?? 0,
-          successRequests: stats?.totalRequests
-            ? stats.totalRequests -
-              Math.round((stats.totalRequests * stats.errorRate) / 100)
-            : 0,
-          errorRequests: stats?.totalRequests
-            ? Math.round((stats.totalRequests * stats.errorRate) / 100)
-            : 0,
-          successRate: stats?.errorRate ? 100 - stats.errorRate : 0,
-          spent: spentToday,
-          totalSpent: totalSpent,
-        };
     }
-  }, [
-    dateFilter,
-    stats?.totalRequests,
-    stats?.errorRate,
-    spentToday,
-    totalSpent,
-  ]);
+
+    // Calculate total requests from filtered data
+    const totalReqs = filteredRequests.reduce(
+      (sum, req) => sum + req.request,
+      0
+    );
+    const successReqs = dashboardData.success;
+    const errorReqs = dashboardData.error;
+    const successRateValue =
+      totalReqs > 0 ? (successReqs / (successReqs + errorReqs)) * 100 : 0;
+
+    return {
+      totalRequests: totalReqs,
+      successRequests: successReqs,
+      errorRequests: errorReqs,
+      successRate: successRateValue,
+      spent: dashboardData.spent_today,
+      totalSpent: dashboardData.total_spent,
+    };
+  }, [dateFilter, dashboardData]);
 
   // Success rate for traffic gauge
   const successRate = filteredStats.successRate;
@@ -300,70 +311,104 @@ export function AdminDashboard({ stats, userBalance }: AdminDashboardProps) {
 
   // Chart data for request trends
   const chartData = useMemo(() => {
-    const generateRandomValue = (min: number, max: number) =>
-      Math.floor(Math.random() * (max - min + 1)) + min;
+    if (!dashboardData || !dashboardData.requests.length) {
+      return [];
+    }
+
+    const now = new Date();
+    let filteredRequests = [...dashboardData.requests];
 
     switch (dateFilter) {
       case "today": {
-        // Hourly data for today (24 hours)
-        return Array.from({ length: 24 }, (_, i) => ({
-          label: `${i.toString().padStart(2, "0")}:00`,
-          requests: generateRandomValue(50, 300),
-        }));
+        // Show requests for today only
+        const today = now.toISOString().split("T")[0];
+        filteredRequests = dashboardData.requests
+          .filter((req) => req.date === today)
+          .sort(
+            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+          );
+        break;
       }
 
       case "7days": {
-        // Daily data for last 7 days
-        const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-        return days.map((day) => ({
-          label: day,
-          requests: generateRandomValue(800, 2500),
-        }));
+        // Show last 7 days
+        const sevenDaysAgo = new Date(now);
+        sevenDaysAgo.setDate(now.getDate() - 7);
+        filteredRequests = dashboardData.requests
+          .filter((req) => new Date(req.date) >= sevenDaysAgo)
+          .sort(
+            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+          );
+        break;
       }
 
       case "30days": {
-        // Daily data for last 30 days
-        return Array.from({ length: 30 }, (_, i) => ({
-          label: `Day ${i + 1}`,
-          requests: generateRandomValue(800, 3000),
-        }));
+        // Show last 30 days
+        const thirtyDaysAgo = new Date(now);
+        thirtyDaysAgo.setDate(now.getDate() - 30);
+        filteredRequests = dashboardData.requests
+          .filter((req) => new Date(req.date) >= thirtyDaysAgo)
+          .sort(
+            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+          );
+        break;
       }
 
       case "thisMonth": {
-        // Daily data for current month
-        const currentDay = new Date().getDate();
-        return Array.from({ length: currentDay }, (_, i) => ({
-          label: `${i + 1}`,
-          requests: generateRandomValue(800, 3200),
-        }));
+        // Show current month
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+        filteredRequests = dashboardData.requests
+          .filter((req) => {
+            const reqDate = new Date(req.date);
+            return (
+              reqDate.getMonth() === currentMonth &&
+              reqDate.getFullYear() === currentYear
+            );
+          })
+          .sort(
+            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+          );
+        break;
       }
 
       case "allTime": {
-        // Monthly data for all time (12 months)
-        const months = [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
-        ];
-        return months.map((month) => ({
-          label: month,
-          requests: generateRandomValue(1200, 4500),
-        }));
+        // Show all requests sorted by date
+        filteredRequests = dashboardData.requests.sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+        );
+        break;
+      }
+    }
+
+    // Format the data for the chart
+    return filteredRequests.map((req) => {
+      const date = new Date(req.date);
+      let label = "";
+
+      if (dateFilter === "today") {
+        label = date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        });
+      } else if (dateFilter === "allTime") {
+        label = date.toLocaleDateString("en-US", {
+          month: "short",
+          year: "2-digit",
+        });
+      } else {
+        label = date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        });
       }
 
-      default:
-        return [];
-    }
-  }, [dateFilter]);
+      return {
+        label,
+        requests: req.request,
+      };
+    });
+  }, [dateFilter, dashboardData]);
 
   // Status items
   const statusItems = [
@@ -447,56 +492,72 @@ export function AdminDashboard({ stats, userBalance }: AdminDashboardProps) {
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {statCards.map((stat, index) => {
-          const Icon = stat.icon;
-          return (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{
-                duration: 0.5,
-                delay: index * 0.1,
-                ease: [0.4, 0, 0.2, 1],
-              }}
-            >
-              <Card className="p-6 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 hover:shadow-lg transition-shadow duration-300">
+        {isLoadingDashboard
+          ? // Loading skeleton
+            Array.from({ length: 4 }).map((_, index) => (
+              <Card
+                key={index}
+                className="p-6 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800"
+              >
                 <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <p
-                      className={`text-sm text-zinc-600 dark:text-zinc-400 ${fontClass}`}
-                    >
-                      {stat.title}
-                    </p>
-                    <motion.p
-                      className="text-xl text-zinc-900 dark:text-zinc-100"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: index * 0.1 + 0.3 }}
-                    >
-                      {stat.value}
-                    </motion.p>
+                  <div className="space-y-2 flex-1">
+                    <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded w-24 animate-pulse" />
+                    <div className="h-6 bg-zinc-200 dark:bg-zinc-700 rounded w-32 animate-pulse" />
                   </div>
-                  <motion.div
-                    className={`w-8 h-8 sm:w-12 sm:h-12 ${stat.iconBg} rounded-lg flex items-center justify-center`}
-                    initial={{ rotate: -180, scale: 0 }}
-                    animate={{ rotate: 0, scale: 1 }}
-                    transition={{
-                      duration: 0.6,
-                      delay: index * 0.1 + 0.2,
-                      type: "spring",
-                      stiffness: 200,
-                    }}
-                  >
-                    <Icon
-                      className={`w-4 h-4 sm:w-6 sm:h-6 ${stat.iconColor}`}
-                    />
-                  </motion.div>
+                  <div className="w-12 h-12 bg-zinc-200 dark:bg-zinc-700 rounded-lg animate-pulse" />
                 </div>
               </Card>
-            </motion.div>
-          );
-        })}
+            ))
+          : statCards.map((stat, index) => {
+              const Icon = stat.icon;
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.1,
+                    ease: [0.4, 0, 0.2, 1],
+                  }}
+                >
+                  <Card className="p-6 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 hover:shadow-lg transition-shadow duration-300">
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-2">
+                        <p
+                          className={`text-sm text-zinc-600 dark:text-zinc-400 ${fontClass}`}
+                        >
+                          {stat.title}
+                        </p>
+                        <motion.p
+                          className="text-xl text-zinc-900 dark:text-zinc-100"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: index * 0.1 + 0.3 }}
+                        >
+                          {stat.value}
+                        </motion.p>
+                      </div>
+                      <motion.div
+                        className={`w-8 h-8 sm:w-12 sm:h-12 ${stat.iconBg} rounded-lg flex items-center justify-center`}
+                        initial={{ rotate: -180, scale: 0 }}
+                        animate={{ rotate: 0, scale: 1 }}
+                        transition={{
+                          duration: 0.6,
+                          delay: index * 0.1 + 0.2,
+                          type: "spring",
+                          stiffness: 200,
+                        }}
+                      >
+                        <Icon
+                          className={`w-4 h-4 sm:w-6 sm:h-6 ${stat.iconColor}`}
+                        />
+                      </motion.div>
+                    </div>
+                  </Card>
+                </motion.div>
+              );
+            })}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -519,41 +580,55 @@ export function AdminDashboard({ stats, userBalance }: AdminDashboardProps) {
                 {getChartTitle()}
               </h3>
             </motion.div>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8, duration: 0.5 }}
-            >
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
-                  <XAxis
-                    dataKey="label"
-                    stroke="#71717a"
-                    tick={{ fill: "#a1a1aa", fontSize: 12 }}
-                  />
-                  <YAxis
-                    stroke="#71717a"
-                    tick={{ fill: "#a1a1aa", fontSize: 12 }}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "#18181b",
-                      border: "1px solid #3f3f46",
-                      borderRadius: "8px",
-                      color: "#fafafa",
-                    }}
-                  />
-                  <Bar
-                    dataKey="requests"
-                    fill="#3b82f6"
-                    radius={[4, 4, 0, 0]}
-                    animationDuration={1500}
-                    animationBegin={800}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </motion.div>
+            {isLoadingDashboard ? (
+              <div className="flex items-center justify-center h-[300px]">
+                <div className="text-zinc-500 dark:text-zinc-400">
+                  Loading chart data...
+                </div>
+              </div>
+            ) : chartData.length === 0 ? (
+              <div className="flex items-center justify-center h-[300px]">
+                <div className="text-zinc-500 dark:text-zinc-400">
+                  No data available
+                </div>
+              </div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8, duration: 0.5 }}
+              >
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
+                    <XAxis
+                      dataKey="label"
+                      stroke="#71717a"
+                      tick={{ fill: "#a1a1aa", fontSize: 12 }}
+                    />
+                    <YAxis
+                      stroke="#71717a"
+                      tick={{ fill: "#a1a1aa", fontSize: 12 }}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#18181b",
+                        border: "1px solid #3f3f46",
+                        borderRadius: "8px",
+                        color: "#fafafa",
+                      }}
+                    />
+                    <Bar
+                      dataKey="requests"
+                      fill="#3b82f6"
+                      radius={[4, 4, 0, 0]}
+                      animationDuration={1500}
+                      animationBegin={800}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </motion.div>
+            )}
           </Card>
         </motion.div>
 
