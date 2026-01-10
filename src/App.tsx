@@ -1491,12 +1491,7 @@ function AppContent() {
               <Suspense
                 fallback={<LoadingFallback text="Loading API Keys..." />}
               >
-                <APIKeyManager
-                  apiKeys={apiKeys}
-                  onCreateKey={handleCreateKey}
-                  onDeleteKey={handleDeleteKey}
-                  onToggleStatus={handleToggleStatus}
-                />
+                <APIKeyManager />
               </Suspense>
             )}
             {activeTab === "logs" && (

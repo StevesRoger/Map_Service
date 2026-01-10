@@ -87,10 +87,10 @@ export function Login({ onSwitchToSignup, onBackToLanding }: LoginProps) {
       setError(t.auth.passwordRequired);
       return;
     }
-    if (password.length < 6) {
-      setError(t.auth.passwordMinLength);
-      return;
-    }
+    // if (password.length < 6) {
+    //   setError(t.auth.passwordMinLength);
+    //   return;
+    // }
 
     try {
       setIsLoading(true);
@@ -250,10 +250,10 @@ export function Login({ onSwitchToSignup, onBackToLanding }: LoginProps) {
       setError("Please enter a new password");
       return;
     }
-    if (newPassword.length < 6) {
-      setError(t.auth.passwordMinLength);
-      return;
-    }
+    // if (newPassword.length < 6) {
+    //   setError(t.auth.passwordMinLength);
+    //   return;
+    // }
     if (!confirmPassword) {
       setError("Please confirm your password");
       return;

@@ -28,7 +28,14 @@ export interface LoginResponse {
     access_token: string;
     token_type: string;
     expires_in: number;
+    expires_date?: string;
+    issued_at?: string;
     refresh_token?: string;
+    refresh_token_expires_date?: string;
+    refresh_token_expires_in?: number;
+    roles?: string[];
+    scope?: string;
+    user_id?: string;
     user?: {
       id: string;
       email: string;
@@ -37,6 +44,9 @@ export interface LoginResponse {
     };
   };
   request_id: string;
+  code?: string;
+  message?: string;
+  trace_id?: string;
 }
 
 export interface PreValidateRequest {
@@ -435,6 +445,7 @@ class AuthAPIService {
       request_id: requestId,
     };
 
+    // PUT method with body payload (not query parameters)
     const response = await this.api.put<AuthResponse>(
       "/client/reset-password",
       payload

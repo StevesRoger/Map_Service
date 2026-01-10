@@ -16,6 +16,7 @@ interface User {
   company?: string;
   tier: "basic" | "pro" | "enterprise";
   role: "user" | "admin";
+  roles?: string[];
 }
 
 interface AuthContextType {
@@ -73,13 +74,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.log("Login API Response:", response);
 
         if (response.data && response.data.access_token) {
+          const rawRoles = Array.isArray(response.data.roles)
+            ? response.data.roles
+            : response.data.user?.role
+            ? [response.data.user?.role]
+            : [];
+          const normalizedRoles = rawRoles
+            .filter(Boolean)
+            .map((role: string) => role.toLowerCase());
+          const resolvedRole = normalizedRoles.includes("admin")
+            ? "admin"
+            : "user";
+
           // Create user object from backend response
           const userData: User = {
-            id: response.data.user?.id || "user_" + Date.now(),
+            id:
+              response.data.user_id ||
+              response.data.user?.id ||
+              "user_" + Date.now(),
             email: response.data.user?.email || email,
             name: response.data.user?.full_name || email.split("@")[0],
             tier: "pro",
-            role: response.data.user?.role === "admin" ? "admin" : "user",
+            role: resolvedRole,
+            roles: rawRoles,
           };
 
           console.log("✅ User data fetched from backend:", {
