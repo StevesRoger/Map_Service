@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Label } from "./ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { toast } from "sonner";
@@ -6,6 +6,7 @@ import { useLanguage } from "./LanguageContext";
 import type { User, APIKey } from "../types/api";
 import { formatNumber } from "../utils/formatNumber";
 import { formatCurrency } from "../utils/formatNumber";
+import { userService, UserStatistic } from "../services/userService";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Card } from "./ui/card";
@@ -66,20 +67,27 @@ import {
 } from "lucide-react";
 
 interface UserManagementProps {
-  users: User[];
-  apiKeys: APIKey[];
-  onSuspendUser: (userId: string) => void;
-  onActivateUser: (userId: string) => void;
-  onAdjustBalance: (userId: string, amount: number) => void;
+  users?: User[];
+  apiKeys?: APIKey[];
+  onSuspendUser?: (userId: string) => void;
+  onActivateUser?: (userId: string) => void;
+  onAdjustBalance?: (userId: string, amount: number) => void;
 }
 
 export function UserManagement({
-  users,
-  apiKeys,
+  users: initialUsers = [],
+  apiKeys: initialApiKeys = [],
   onSuspendUser,
   onActivateUser,
   onAdjustBalance,
 }: UserManagementProps) {
+  const [users, setUsers] = useState<User[]>(initialUsers);
+  const [apiKeys, setApiKeys] = useState<APIKey[]>(initialApiKeys);
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(initialUsers.length);
+  const [useServerPaging, setUseServerPaging] = useState(true);
+  const [userStats, setUserStats] = useState<UserStatistic | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -94,6 +102,97 @@ export function UserManagement({
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, statusFilter]);
+
+  const fetchUsers = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const statusParam =
+        statusFilter === "all" ? undefined : statusFilter.toUpperCase();
+      const searchParam = searchTerm.trim() || undefined;
+
+      const response = await userService.getUsers({
+        page: currentPage,
+        limit: itemsPerPage,
+        status: statusParam,
+        search: searchParam,
+        sortField: "created_date",
+        sortDirection: "DESC",
+      });
+
+      const isSuccess =
+        response.code === "success" ||
+        response.code === "200" ||
+        response.message === "successful";
+
+      if (!isSuccess) {
+        throw new Error(response.message || "Failed to load users");
+      }
+
+      const mappedUsers = response.data.item.map((item) =>
+        userService.mapToUser(item)
+      );
+      const mappedKeys = response.data.item.flatMap((item) =>
+        userService.mapToUserApiKeys(item)
+      );
+
+      setUsers(mappedUsers);
+      setApiKeys(mappedKeys);
+      setTotalPages(response.data.total_page || 1);
+      setTotalRecords(response.data.total_record || mappedUsers.length);
+      setUseServerPaging(true);
+    } catch (error: any) {
+      console.error("Failed to fetch users:", error);
+      console.error("Error response:", error.response?.data);
+
+      if (initialUsers.length > 0) {
+        setUseServerPaging(false);
+        setUsers(initialUsers);
+        setApiKeys(initialApiKeys);
+        setTotalRecords(initialUsers.length);
+        setTotalPages(
+          Math.max(1, Math.ceil(initialUsers.length / itemsPerPage))
+        );
+      }
+
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to load users";
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [
+    currentPage,
+    initialApiKeys,
+    initialUsers,
+    itemsPerPage,
+    searchTerm,
+    statusFilter,
+  ]);
+
+  const fetchStatistics = useCallback(async () => {
+    try {
+      const stats = await userService.getStatistics();
+      setUserStats(stats);
+    } catch (error: any) {
+      console.error("Failed to fetch user statistics:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!useServerPaging) {
+      return;
+    }
+    fetchUsers();
+  }, [fetchUsers, useServerPaging]);
+
+  useEffect(() => {
+    if (!useServerPaging) {
+      return;
+    }
+    fetchStatistics();
+  }, [fetchStatistics, useServerPaging]);
 
   const getStatusBadgeClasses = (status: User["status"]) => {
     if (status === "active") {
@@ -123,77 +222,154 @@ export function UserManagement({
     }
   };
 
-  const filteredUsers = users.filter((user) => {
-    const matchesSearch =
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      false;
-    const matchesStatus =
-      statusFilter === "all" || user.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  const filteredUsers = useServerPaging
+    ? users
+    : users.filter((user) => {
+        const matchesSearch =
+          user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          false;
+        const matchesStatus =
+          statusFilter === "all" || user.status === statusFilter;
+        return matchesSearch && matchesStatus;
+      });
 
   // Pagination calculations
-  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
+  const effectiveTotalPages = useServerPaging
+    ? totalPages
+    : Math.ceil(filteredUsers.length / itemsPerPage);
+  const effectiveTotalRecords = useServerPaging
+    ? totalRecords
+    : filteredUsers.length;
+  const paginatedUsers = useServerPaging
+    ? filteredUsers
+    : filteredUsers.slice(startIndex, endIndex);
 
   const getUserKeys = (userId: string) => {
     return apiKeys.filter((key) => key.userId === userId);
   };
 
-  const handleSuspendUser = (userId: string) => {
-    onSuspendUser(userId);
-    toast.success("User suspended successfully");
-    setIsUserDialogOpen(false);
+  const handleSuspendUser = async (userId: string) => {
+    if (!useServerPaging && onSuspendUser) {
+      onSuspendUser(userId);
+      toast.success("User suspended successfully");
+      setIsUserDialogOpen(false);
+      return;
+    }
+
+    try {
+      await userService.disableUser(userId);
+      toast.success("User suspended successfully");
+      setIsUserDialogOpen(false);
+      fetchUsers();
+      fetchStatistics();
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to suspend user";
+      toast.error(errorMessage);
+    }
   };
 
-  const handleActivateUser = (userId: string) => {
-    onActivateUser(userId);
-    toast.success("User activated successfully");
-    setIsUserDialogOpen(false);
+  const handleActivateUser = async (userId: string) => {
+    if (!useServerPaging && onActivateUser) {
+      onActivateUser(userId);
+      toast.success("User activated successfully");
+      setIsUserDialogOpen(false);
+      return;
+    }
+
+    try {
+      await userService.enableUser(userId);
+      toast.success("User activated successfully");
+      setIsUserDialogOpen(false);
+      fetchUsers();
+      fetchStatistics();
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to activate user";
+      toast.error(errorMessage);
+    }
   };
 
-  const handleAdjustBalance = () => {
+  const handleAdjustBalance = async () => {
     if (!selectedUser) return;
     const amount = parseFloat(balanceAmount);
     if (isNaN(amount) || amount === 0) {
       toast.error("Please enter a valid amount");
       return;
     }
-
-    // Check if the absolute adjustment amount exceeds the current balance
-    const absAmount = Math.abs(amount);
-    if (absAmount > selectedUser.totalBalance) {
-      toast.error(
-        `Cannot adjust by $${absAmount.toFixed(
-          2
-        )}. Current balance is only $${selectedUser.totalBalance.toFixed(2)}`
+    if (!useServerPaging && onAdjustBalance) {
+      onAdjustBalance(selectedUser.id, amount);
+      toast.success(
+        `Balance adjusted by ${amount > 0 ? "+" : ""}$${amount.toFixed(2)}`
       );
+      setIsBalanceDialogOpen(false);
+      setBalanceAmount("");
       return;
     }
 
-    // For negative adjustments, also check if it would result in negative balance
-    if (amount < 0) {
-      const newBalance = selectedUser.totalBalance + amount;
-      if (newBalance < 0) {
-        toast.error(
-          `Cannot decrease balance by $${absAmount.toFixed(
-            2
-          )}. Current balance is only $${selectedUser.totalBalance.toFixed(2)}`
-        );
-        return;
-      }
+    try {
+      await userService.adjustBalance(selectedUser.id, amount);
+      toast.success(
+        `Balance adjusted by ${amount > 0 ? "+" : ""}$${amount.toFixed(2)}`
+      );
+      setIsBalanceDialogOpen(false);
+      setBalanceAmount("");
+      fetchUsers();
+      fetchStatistics();
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to adjust balance";
+      toast.error(errorMessage);
+    }
+  };
+
+  const handleOpenUserDetails = async (user: User) => {
+    setSelectedUser(user);
+    setIsUserDialogOpen(true);
+
+    if (!useServerPaging) {
+      return;
     }
 
-    onAdjustBalance(selectedUser.id, amount);
-    toast.success(
-      `Balance adjusted by ${amount > 0 ? "+" : ""}$${amount.toFixed(2)}`
-    );
-    setIsBalanceDialogOpen(false);
-    setBalanceAmount("");
+    try {
+      const response = await userService.getUserById(user.id);
+      const isSuccess =
+        response.code === "success" ||
+        response.code === "200" ||
+        response.message === "successful";
+
+      if (!isSuccess) {
+        throw new Error(response.message || "Failed to load user details");
+      }
+
+      const mappedUser = userService.mapToUser(response.data);
+      const mappedKeys = userService.mapToUserApiKeys(response.data);
+
+      setSelectedUser(mappedUser);
+      setUsers((prev) =>
+        prev.map((item) => (item.id === mappedUser.id ? mappedUser : item))
+      );
+      setApiKeys((prev) => [
+        ...prev.filter((key) => key.userId !== mappedUser.id),
+        ...mappedKeys,
+      ]);
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to load user details";
+      toast.error(errorMessage);
+    }
   };
 
   const handleExportUsers = () => {
@@ -234,10 +410,16 @@ export function UserManagement({
   };
 
   // Calculate totals
-  const totalUsers = users.length;
-  const activeUsers = users.filter((u) => u.status === "active").length;
-  const totalBalance = users.reduce((sum, u) => sum + u.totalBalance, 0);
-  const totalRevenue = users.reduce((sum, u) => sum + u.totalSpent, 0);
+  const totalUsers = userStats?.total ?? effectiveTotalRecords;
+  const activeUsers =
+    userStats?.total_active ??
+    users.filter((u) => u.status === "active").length;
+  const totalBalance =
+    userStats?.total_balance ??
+    users.reduce((sum, u) => sum + u.totalBalance, 0);
+  const totalRevenue =
+    userStats?.total_revenue ??
+    users.reduce((sum, u) => sum + u.totalSpent, 0);
 
   const { t, language } = useLanguage();
 
@@ -459,7 +641,16 @@ export function UserManagement({
 
       {/* Users List */}
       <div className="space-y-3 sm:space-y-4">
-        {paginatedUsers.length === 0 ? (
+        {isLoading ? (
+          <Card className="p-8 sm:p-12 bg-zinc-900 border-[rgba(255,255,255,0.1)] rounded-[14px]">
+            <div className="text-center">
+              <Users className="w-10 h-10 sm:w-12 sm:h-12 text-zinc-600 mx-auto mb-3 sm:mb-4" />
+              <p className="text-zinc-400 text-sm sm:text-base">
+                {t.common.loading}
+              </p>
+            </div>
+          </Card>
+        ) : paginatedUsers.length === 0 ? (
           <Card className="p-8 sm:p-12 bg-zinc-900 border-[rgba(255,255,255,0.1)] rounded-[14px]">
             <div className="text-center">
               <Users className="w-10 h-10 sm:w-12 sm:h-12 text-zinc-600 mx-auto mb-3 sm:mb-4" />
@@ -514,10 +705,7 @@ export function UserManagement({
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => {
-                          setSelectedUser(user);
-                          setIsUserDialogOpen(true);
-                        }}
+                        onClick={() => handleOpenUserDetails(user)}
                         className={`gap-2 px-3 py-2 h-8 text-zinc-200 hover:bg-transparent text-xs sm:text-sm flex-1 sm:flex-none cursor-pointer ${fontClass}`}
                       >
                         <Eye className="w-4 h-4" />
@@ -648,12 +836,12 @@ export function UserManagement({
       </div>
 
       {/* Pagination */}
-      {filteredUsers.length > 0 && totalPages > 1 && (
+      {effectiveTotalRecords > 0 && effectiveTotalPages > 1 && (
         <div className="box-border flex items-center justify-between pb-[0px] pt-[10px] px-0 relative border-t border-zinc-800 pr-[0px] pl-[0px]">
           <p className="leading-[20px] relative shrink-0 text-[#9f9fa9] text-[14px] text-nowrap tracking-[-0.1504px]">
             {t.users.showingUsers} {startIndex + 1} {t.users.to}{" "}
-            {Math.min(endIndex, filteredUsers.length)} {t.users.of}{" "}
-            {filteredUsers.length} {t.users.usersText}
+            {Math.min(endIndex, effectiveTotalRecords)} {t.users.of}{" "}
+            {effectiveTotalRecords} {t.users.usersText}
           </p>
           <Pagination className="mx-0 justify-end">
             <PaginationContent className="gap-[4px]">
@@ -669,11 +857,11 @@ export function UserManagement({
                   }`}
                 />
               </PaginationItem>
-              {[...Array(totalPages)].map((_, i) => {
+              {[...Array(effectiveTotalPages)].map((_, i) => {
                 const page = i + 1;
                 if (
                   page === 1 ||
-                  page === totalPages ||
+                  page === effectiveTotalPages ||
                   (page >= currentPage - 1 && page <= currentPage + 1)
                 ) {
                   return (
@@ -706,10 +894,12 @@ export function UserManagement({
               <PaginationItem>
                 <PaginationNext
                   onClick={() =>
-                    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                    setCurrentPage((prev) =>
+                      Math.min(effectiveTotalPages, prev + 1)
+                    )
                   }
                   className={`text-zinc-200 hover:bg-zinc-800 hover:text-zinc-100 ${
-                    currentPage === totalPages
+                    currentPage === effectiveTotalPages
                       ? "pointer-events-none opacity-50"
                       : "cursor-pointer"
                   }`}
